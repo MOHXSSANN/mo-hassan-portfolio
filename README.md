@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio starter (Next.js + Tailwind)
 
-## Getting Started
+This repository is a **portfolio website starter** built with **Next.js (App Router)**, **TypeScript**, and **Tailwind CSS**.
 
-First, run the development server:
+The goal is to mirror a modern personal portfolio layout (inspired by [aahanabobade-portfolio](https://aahanabobade-portfolio.vercel.app/)) using a clean component-driven approach.
+
+---
+
+## 🚀 Quick start
 
 ```bash
+cd mo-hassan-portfolio
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open: http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧩 Project structure
 
-## Learn More
+- `app/` — Next.js pages and layout
+- `app/components/` — reusable components (Navbar, Hero, Projects, About, Footer)
+- `app/lib/` — content-driven configuration (`siteConfig`, `projects`)
+- `public/` — static assets
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎨 Design system
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This repo includes reference docs to keep the UI consistent and to help AI-based generation:
 
-## Deploy on Vercel
+- `DESIGN_SYSTEM.md` — color tokens, typography, spacing, button + card patterns
+- `UI-KIT.md` — component rules and how to extend the kit
+- `FRONTEND.md` — development workflow and AI prompting guidance
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ✨ Next steps (customize for yourself)
+
+1. Update `app/lib/siteConfig.ts` with your name, bio, and links.
+2. Add your real projects to `app/lib/projects.ts`.
+3. Update the hero copy, About section, and project cards.
+4. Add new pages and components as needed.
+
+---
+
+## 📦 Deployment
+
+Build locally:
+
+```bash
+npm run build
+npm run start
+```
+
+Deploy to Vercel / Netlify / any static host that supports Next.js.
