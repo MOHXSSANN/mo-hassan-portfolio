@@ -1,9 +1,38 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronRight, GitBranch, GitCommit, GitPullRequest, ExternalLink } from "lucide-react";
-import { useRef, useState } from "react";
+import { ChevronDown, ChevronRight, GitBranch, GitCommit, ExternalLink } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
 import { FILES, type FileId, type ActivityView } from "@/hooks/useIDEState";
+
+const REPO = "MOHXSSANN/mo-hassan-portfolio";
+
+interface GithubCommit {
+  sha: string;
+  commit: { message: string; author: { date: string } };
+}
+
+function useGithubCommits() {
+  const [commits, setCommits] = useState<GithubCommit[]>([]);
+  const [totalCommits, setTotalCommits] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch(`https://api.github.com/repos/${REPO}/commits?per_page=5`)
+      .then((r) => {
+        // GitHub returns total count in the Link header — fall back to array length
+        const link = r.headers.get("Link") ?? "";
+        const match = link.match(/page=(\d+)>; rel="last"/);
+        if (match) setTotalCommits(parseInt(match[1]) * 5);
+        return r.json();
+      })
+      .then((data: GithubCommit[]) => {
+        if (Array.isArray(data)) setCommits(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  return { commits, totalCommits };
+}
 
 interface FileExplorerProps {
   activeFile: FileId;
@@ -115,6 +144,7 @@ function FolderIcon() {
 export function FileExplorer({ activeFile, onFileSelect, isOpen, activityView }: FileExplorerProps) {
   const [folderOpen, setFolderOpen] = useState(true);
   const treeRef = useRef<HTMLDivElement>(null);
+  const { commits, totalCommits } = useGithubCommits();
 
   return (
     <AnimatePresence initial={false}>
@@ -151,10 +181,12 @@ export function FileExplorer({ activeFile, onFileSelect, isOpen, activityView }:
                 style={{ background: "var(--vsc-editor-bg)", border: "1px solid var(--vsc-border)" }}
               >
                 <GitBranch size={13} style={{ color: "#4ec9b0", flexShrink: 0 }} />
-                <span className="flex-1 text-xs font-semibold" style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-mono)" }}>main</span>
-                <span className="text-[10px] flex items-center gap-1" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}>
-                  ↑ 1 commit ahead
-                </span>
+                <span className="flex-1 text-xs font-semibold" style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-mono)" }}>master</span>
+                {totalCommits !== null && (
+                  <span className="text-[10px] flex items-center gap-1" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}>
+                    ↑ {totalCommits} commits
+                  </span>
+                )}
               </div>
 
               {/* Stats row */}
@@ -163,9 +195,9 @@ export function FileExplorer({ activeFile, onFileSelect, isOpen, activityView }:
                 style={{ border: "1px solid var(--vsc-border)" }}
               >
                 {[
-                  { label: "Modified", value: 3, color: "#4ec9b0" },
-                  { label: "Added",    value: 1, color: "#89d185" },
-                  { label: "Deleted",  value: 0, color: "#f14c4c" },
+                  { label: "Files",   value: commits.length > 0 ? "7" : "—", color: "#4ec9b0" },
+                  { label: "Commits", value: totalCommits ?? commits.length || "—", color: "#89d185" },
+                  { label: "Branch",  value: "1", color: "#c586c0" },
                 ].map(({ label, value, color }, i) => (
                   <div
                     key={label}
@@ -185,24 +217,32 @@ export function FileExplorer({ activeFile, onFileSelect, isOpen, activityView }:
               <div>
                 <p className="text-[10px] font-bold tracking-widest uppercase mb-1.5" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-display)" }}>Recent Commits</p>
                 <div className="flex flex-col gap-0.5">
-                  {[
-                    { hash: "a3f9c12", msg: "feat: add terminal with interactive commands" },
-                    { hash: "7b2e441", msg: "feat: custom cursor with spring animation" },
-                    { hash: "c8d1f90", msg: "feat: theme picker in status bar" },
-                    { hash: "e2a3b74", msg: "feat: settings panel with colour themes" },
-                    { hash: "f1c9d22", msg: "init: VS Code IDE portfolio" },
-                  ].map(({ hash, msg }) => (
-                    <div key={hash} className="flex items-start gap-2 px-2 py-1.5 rounded" style={{ fontFamily: "var(--font-mono)" }}
-                      onMouseEnter={e => (e.currentTarget.style.background = "var(--vsc-hover-bg)")}
-                      onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
-                    >
-                      <GitCommit size={11} style={{ color: "#89d185", marginTop: 2, flexShrink: 0 }} />
-                      <div className="min-w-0">
-                        <p className="text-[10px] truncate" style={{ color: "var(--vsc-fg)" }}>{msg}</p>
-                        <p className="text-[10px]" style={{ color: "var(--vsc-fg-muted)" }}>{hash}</p>
-                      </div>
-                    </div>
-                  ))}
+                  {commits.length === 0
+                    ? [1,2,3,4,5].map((i) => (
+                        <div key={i} className="flex items-center gap-2 px-2 py-1.5 rounded animate-pulse">
+                          <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: "var(--vsc-border)" }} />
+                          <div className="h-2 rounded flex-1" style={{ background: "var(--vsc-border)" }} />
+                        </div>
+                      ))
+                    : commits.map((c) => (
+                        <a
+                          key={c.sha}
+                          href={`https://github.com/${REPO}/commit/${c.sha}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-start gap-2 px-2 py-1.5 rounded no-underline"
+                          style={{ fontFamily: "var(--font-mono)", textDecoration: "none" }}
+                          onMouseEnter={e => (e.currentTarget.style.background = "var(--vsc-hover-bg)")}
+                          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+                        >
+                          <GitCommit size={11} style={{ color: "#89d185", marginTop: 2, flexShrink: 0 }} />
+                          <div className="min-w-0">
+                            <p className="text-[10px] truncate" style={{ color: "var(--vsc-fg)" }}>{c.commit.message.split("\n")[0]}</p>
+                            <p className="text-[10px]" style={{ color: "var(--vsc-fg-muted)" }}>{c.sha.slice(0, 7)}</p>
+                          </div>
+                        </a>
+                      ))
+                  }
                 </div>
               </div>
 
