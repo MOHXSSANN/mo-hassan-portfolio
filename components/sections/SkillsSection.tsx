@@ -171,7 +171,7 @@ function FamiliarPill({ label, index }: { label: string; index: number }) {
 
 export function SkillsSection({ onNavigate: _onNavigate }: SkillsSectionProps) {
   return (
-    <div className="min-h-full py-10 pb-20 px-12" style={{ maxWidth: "1400px" }}>
+    <div className="min-h-full py-10 pb-20 px-4 sm:px-8 lg:px-12" style={{ maxWidth: "1400px" }}>
       {/* Comment */}
       <p
         className="text-sm mb-5"

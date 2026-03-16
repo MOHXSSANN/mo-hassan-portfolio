@@ -1,10 +1,13 @@
 "use client";
 
+import { Bot } from "lucide-react";
 import { FILES, type FileId } from "@/hooks/useIDEState";
 
 interface MobileNavProps {
   activeFile: FileId;
   onFileSelect: (id: FileId) => void;
+  onToggleCopilot?: () => void;
+  copilotOpen?: boolean;
 }
 
 const EXT_COLORS: Record<string, string> = {
@@ -17,7 +20,7 @@ const EXT_COLORS: Record<string, string> = {
   md:   "#858585",
 };
 
-export function MobileNav({ activeFile, onFileSelect }: MobileNavProps) {
+export function MobileNav({ activeFile, onFileSelect, onToggleCopilot, copilotOpen }: MobileNavProps) {
   return (
     <nav
       className="flex md:hidden items-center justify-around shrink-0 border-t"
@@ -45,7 +48,6 @@ export function MobileNav({ activeFile, onFileSelect }: MobileNavProps) {
             }}
             aria-label={file.filename}
           >
-            {/* Colored dot */}
             <span
               className="w-1.5 h-1.5 rounded-full"
               style={{ background: dotColor }}
@@ -63,6 +65,28 @@ export function MobileNav({ activeFile, onFileSelect }: MobileNavProps) {
           </button>
         );
       })}
+
+      {/* Copilot button */}
+      {onToggleCopilot && (
+        <button
+          onClick={onToggleCopilot}
+          className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors focus-visible:outline-none"
+          style={{
+            color: copilotOpen ? "var(--vsc-red-light)" : "var(--vsc-fg-muted)",
+            borderTop: copilotOpen ? "2px solid var(--vsc-red-light)" : "2px solid transparent",
+            background: copilotOpen ? "var(--vsc-active-bg)" : "transparent",
+          }}
+          aria-label="Mo's Copilot"
+        >
+          <Bot size={14} />
+          <span
+            className="font-bold"
+            style={{ fontSize: "9px", fontFamily: "var(--font-mono)", letterSpacing: "0.05em" }}
+          >
+            AI
+          </span>
+        </button>
+      )}
     </nav>
   );
 }

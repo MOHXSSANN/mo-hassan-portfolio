@@ -52,7 +52,7 @@ export function AboutSection({ onNavigate: _onNavigate }: AboutSectionProps) {
   const bioInView = useInView(bioRef, { once: true });
 
   return (
-    <div className="min-h-full pb-20 px-10 lg:px-16 pt-10" style={{ maxWidth: "1200px" }}>
+    <div className="min-h-full pb-20 px-4 sm:px-8 lg:px-16 pt-10" style={{ maxWidth: "1200px" }}>
 
       {/* File comment header */}
       <p

@@ -222,7 +222,7 @@ export function ProjectsSection({ onNavigate: _onNavigate }: ProjectsSectionProp
         <span className="line-number">2</span>
       </div>
 
-      <div className="px-8 lg:px-12 mt-6 space-y-0">
+      <div className="px-4 sm:px-8 lg:px-12 mt-6 space-y-0">
         {groups.map(({ year, items }) => {
           // pad to even number so grid stays balanced
           const padded = items.length % 2 !== 0 ? [...items, null] : items;
@@ -258,19 +258,19 @@ export function ProjectsSection({ onNavigate: _onNavigate }: ProjectsSectionProp
                       {rowIdx > 0 && (
                         <div className="h-px w-full my-4" style={{ background: "var(--vsc-border)" }} />
                       )}
-                      <div className="relative grid grid-cols-2 gap-0">
-                        {/* Vertical center line */}
+                      <div className="relative grid grid-cols-1 md:grid-cols-2 gap-0">
+                        {/* Vertical center line — desktop only */}
                         <div
-                          className="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 pointer-events-none"
+                          className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 pointer-events-none"
                           style={{ background: "var(--vsc-border)" }}
                         />
                         {row.map((p, col) =>
                           p ? (
-                            <div key={p.id} className={col === 0 ? "pr-5" : "pl-5"}>
+                            <div key={p.id} className={col === 0 ? "md:pr-5" : "md:pl-5"}>
                               <ProjectCard project={p} index={rowStart + col} />
                             </div>
                           ) : (
-                            <div key="empty" className="pl-5" />
+                            <div key="empty" className="hidden md:block md:pl-5" />
                           )
                         )}
                       </div>

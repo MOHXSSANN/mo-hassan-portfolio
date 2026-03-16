@@ -31,7 +31,16 @@ export function IDELayout() {
   const [terminalOpen,       setTerminalOpen]        = useState(false);
   const [terminalClearCount, setTerminalClearCount]  = useState(0);
   const [copilotOpen,        setCopilotOpen]         = useState(false);
+  const [isMobile,           setIsMobile]            = useState(false);
   const { themeId, changeTheme } = useTheme();
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // Global keyboard shortcuts
   useEffect(() => {
@@ -154,17 +163,18 @@ export function IDELayout() {
             />
           </div>
 
-          {/* Copilot panel — slides in from the right */}
+          {/* Copilot panel — slides in from the right (full-screen on mobile) */}
           <CopilotPanel
             isOpen={copilotOpen}
             onClose={() => setCopilotOpen(false)}
+            isMobile={isMobile}
           />
         </div>
 
         {/* Row 3 — Status bar / Mobile nav */}
         <div className="shrink-0">
           <StatusBar activeFile={activeFile} themeId={themeId} onThemeChange={changeTheme} onToggleTerminal={() => setTerminalOpen((p) => !p)} />
-          <MobileNav activeFile={activeFile} onFileSelect={setActiveFile} />
+          <MobileNav activeFile={activeFile} onFileSelect={setActiveFile} onToggleCopilot={() => setCopilotOpen((p) => !p)} copilotOpen={copilotOpen} />
         </div>
       </motion.div>
 

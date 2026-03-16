@@ -293,7 +293,7 @@ export function HomeSection({ onNavigate }: HomeSectionProps) {
       </div>
 
       {/* Main content — two-column on lg+, stacked on mobile */}
-      <div className="pl-14 pr-8 mt-3 flex flex-col lg:flex-row lg:items-start lg:gap-8">
+      <div className="pl-4 pr-4 sm:pl-14 sm:pr-8 mt-3 flex flex-col lg:flex-row lg:items-start lg:gap-8">
 
         {/* ── Left column ─── */}
         <div className="flex-1 min-w-0">
@@ -311,7 +311,7 @@ export function HomeSection({ onNavigate }: HomeSectionProps) {
             className="font-black leading-[0.88] tracking-tight"
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(5rem, 13vw, 11rem)",
+              fontSize: "clamp(3.2rem, 13vw, 11rem)",
               letterSpacing: "-0.04em",
             }}
           >
@@ -431,12 +431,13 @@ export function HomeSection({ onNavigate }: HomeSectionProps) {
           }}
         >
           <div className="grid grid-cols-2 md:grid-cols-4">
-            {Object.entries(stats).map(([key, value], i, arr) => (
+            {Object.entries(stats).map(([key, value], i) => (
               <div
                 key={key}
                 className="flex flex-col items-center justify-center py-5 px-4"
                 style={{
-                  borderRight: i < arr.length - 1 ? "1px solid var(--vsc-border)" : "none",
+                  borderRight: i % 2 !== 1 ? "1px solid var(--vsc-border)" : "none",
+                  borderBottom: i < 2 ? "1px solid var(--vsc-border)" : "none",
                 }}
               >
                 <span
@@ -543,13 +544,13 @@ export function HomeSection({ onNavigate }: HomeSectionProps) {
           initial={{ opacity: 0, scale: 0.92, y: 12 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.55, ease: "easeOut" }}
-          className="shrink-0 flex justify-center lg:justify-start lg:pt-2"
+          className="shrink-0 flex justify-center lg:justify-start lg:pt-2 hidden sm:flex"
         >
           <div
             className="relative rounded-full overflow-hidden"
             style={{
-              width: 280,
-              height: 280,
+              width: "clamp(160px, 30vw, 280px)",
+              height: "clamp(160px, 30vw, 280px)",
               flexShrink: 0,
             }}
           >

@@ -87,6 +87,13 @@ html, body {
 
 * { cursor: none !important; }
 
+/* ── Mobile overrides ───────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  html, body { cursor: auto; }
+  * { cursor: auto !important; }
+  .token-comment { font-size: 1rem; }
+}
+
 * { box-sizing: border-box; }
 
 /* ── Scrollbar ──────────────────────────────────────────────────────── */

@@ -236,7 +236,7 @@ function renderInline(text: string): React.ReactNode[] {
   return parts;
 }
 
-export function CopilotPanel({ isOpen, onClose }: CopilotPanelProps) {
+export function CopilotPanel({ isOpen, onClose, isMobile }: CopilotPanelProps & { isMobile?: boolean }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -370,11 +370,18 @@ export function CopilotPanel({ isOpen, onClose }: CopilotPanelProps) {
       {isOpen && (
         <motion.div
           key="copilot-panel"
-          initial={{ width: 0, opacity: 0 }}
-          animate={{ width: 320, opacity: 1 }}
-          exit={{ width: 0, opacity: 0 }}
+          initial={isMobile ? { opacity: 0, y: 40 } : { width: 0, opacity: 0 }}
+          animate={isMobile ? { opacity: 1, y: 0 } : { width: 320, opacity: 1 }}
+          exit={isMobile ? { opacity: 0, y: 40 } : { width: 0, opacity: 0 }}
           transition={{ duration: 0.22, ease: "easeInOut" }}
-          style={{
+          style={isMobile ? {
+            position: "fixed",
+            inset: 0,
+            zIndex: 99999,
+            display: "flex",
+            flexDirection: "column",
+            background: "var(--vsc-sidebar-bg)",
+          } : {
             height: "100%",
             display: "flex",
             flexDirection: "column",
@@ -382,6 +389,7 @@ export function CopilotPanel({ isOpen, onClose }: CopilotPanelProps) {
             borderLeft: "1px solid var(--vsc-border)",
             overflow: "hidden",
             flexShrink: 0,
+            width: 320,
           }}
         >
           {/* ── Header ── */}

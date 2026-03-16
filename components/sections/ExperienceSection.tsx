@@ -45,7 +45,7 @@ function ExperienceEntry({ entry, index }: { entry: typeof experience[number]; i
         style={{
           color: "#ffffff",
           fontFamily: "var(--font-display)",
-          fontSize: "2rem",
+          fontSize: "clamp(1.4rem, 5vw, 2rem)",
           letterSpacing: "-0.02em",
         }}
       >
@@ -92,7 +92,7 @@ function ExperienceEntry({ entry, index }: { entry: typeof experience[number]; i
 export function ExperienceSection({ onNavigate: _onNavigate }: ExperienceSectionProps) {
   return (
     <div className="min-h-full pb-16">
-      <div className="px-10 lg:px-16 pt-10">
+      <div className="px-4 sm:px-8 lg:px-16 pt-10">
 
         {/* Heading */}
         <motion.h1

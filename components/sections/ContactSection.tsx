@@ -92,7 +92,7 @@ export function ContactSection({ onNavigate: _ }: ContactSectionProps) {
   };
 
   return (
-    <div className="min-h-full overflow-y-auto" style={{ padding: "24px 32px 48px" }}>
+    <div className="min-h-full overflow-y-auto" style={{ padding: "24px clamp(16px, 5vw, 32px) 48px" }}>
       {/* Top comment */}
       <div className="mb-6" style={{ fontFamily: "var(--font-mono)", fontSize: "13px" }}>
         <span style={{ color: "var(--vsc-green)" }}>/* contact.css — let&apos;s build something */</span>

@@ -58,7 +58,7 @@ export function ReadmeSection({ onNavigate: _onNavigate }: ReadmeSectionProps) {
 
   return (
     <div className="min-h-full pb-16">
-      <div className="px-10 lg:px-16 pt-10 max-w-3xl space-y-12">
+      <div className="px-4 sm:px-8 lg:px-16 pt-10 max-w-3xl space-y-12">
 
         {/* ── Name + tagline + badges ── */}
         <motion.div
