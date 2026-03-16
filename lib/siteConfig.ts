@@ -8,11 +8,11 @@ export const siteConfig = {
     { label: "Full-Stack Developer",    color: "#4ec9b0" },
     { label: "Cybersecurity Student",   color: "#c586c0" },
     { label: "Software Tester",         color: "#569cd6" },
-    { label: "@ CBSA",                  color: "#9d1515" },
+    { label: "@ CBSA",                  color: "var(--vsc-red)" },
     { label: "Volleyball Enthusiast",   color: "#dcdcaa" },
   ],
 
-  tagline: "Always learning, always shipping ⚡",
+  tagline: "Always learning, always growing",
 
   bio: "Third-year **CS student** at Carleton, working as a **Junior Developer at CBSA** by day and tinkering with **AI and backend systems** by night. I care about writing code that's **fast**, **secure**, and actually **solves real problems**.",
 
@@ -27,7 +27,7 @@ export const siteConfig = {
 
   socials: {
     github:    "https://github.com/MOHXSSANN",
-    linkedin:  "https://linkedin.com/in/mohammed-hassan-62",
+    linkedin:  "https://www.linkedin.com/in/mohammed-h-20a63a1a7/",
     twitter:   "",
     email:     "mailto:mohammedabdelhaleem62@gmail.com",
     medium:    "",
@@ -43,20 +43,25 @@ export const siteConfig = {
   },
 
   about: {
-    bio: "Hi! I'm **Mo Hassan**, a third-year **Computer Science** student at Carleton University specializing in **Cybersecurity**. I have hands-on experience in **full-stack development** and **software testing** within government and enterprise environments. I love building systems that are **secure**, **efficient**, and genuinely scalable — currently doing that as a **Junior Developer at CBSA**.",
+    bio: "Hi! I'm **Mo Hassan**, a third-year **Cybersecurity & CS** student at Carleton, **Junior Developer at CBSA** by day, and volleyball league organizer by night. I love building systems that are **fast, secure, and actually solve real problems**, but I'm just as obsessed with understanding people as I am with understanding machines. I'm drawn to **psychology**, fascinated by what drives human behavior, and I believe the best software is built by people who understand both.",
 
     paragraphs: [
       "Hi! I'm Mo Hassan, a third-year Computer Science student at Carleton University specializing in Cybersecurity.",
-      "I have hands-on experience in full-stack development and software testing within government and enterprise environments. Currently a Junior Developer at the Canada Border Services Agency, building Radiance Vault — a secure document search and classification platform.",
+      "I work as a Junior Developer at CBSA building Radiance Vault — a secure document search and classification platform. Outside of code, I run Ottawa Volleyball Revival, hosting tournaments with 150+ attendees across Ottawa.",
     ],
 
     currentFocusPoints: [
       "Building Radiance Vault at CBSA — secure document search & classification",
-      "Exploring real-time search with Meilisearch and document parsing pipelines",
       "Deepening expertise in cybersecurity and secure system design",
-      "Strong interest in AI/ML integration into production systems",
+      "AI/ML integration into production systems",
       "Talk to me about Python, TypeScript, full-stack dev, or security",
-      "Always learning, always shipping ⚡",
+      "Always learning, always growing",
+    ],
+
+    beyondCode: [
+      { title: "Video Editor", body: "Create highlight reels, event recaps, and promotional content for OVR. Comfortable with cuts, transitions, and storytelling through video." },
+      { title: "Event Planner", body: "End-to-end tournament logistics: sponsorships, scheduling, volunteer coordination, and day-of operations." },
+      { title: "Psychology Enthusiast", body: "Fascinated by human behavior, decision-making, and motivation. I believe understanding people is just as important as understanding systems." },
     ],
 
     highlights: [
@@ -72,7 +77,8 @@ export const siteConfig = {
       degree: "BSc Computer Science — Cybersecurity (Co-op)",
       school: "Carleton University",
       year:   "Apr. 2027 (Expected)",
-      gpa:    "3.6 / 4.0",
+      gpa:    "3.8 / 4.0",
+      logo:   "/org-logo.jpg",
     },
   ],
 
@@ -86,11 +92,13 @@ export const siteConfig = {
       title: "Carleton Computer Science Society (CSS)",
       org:   "Carleton University",
       years: "Present",
+      logo:  "/css-logo.png",
     },
     {
       title: "CU Blueprint",
       org:   "Carleton University",
       years: "2023 – 2024",
+      logo:  "/cublueprint_logo.jpg",
     },
   ],
 };
