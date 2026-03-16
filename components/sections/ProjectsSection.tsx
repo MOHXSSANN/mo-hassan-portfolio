@@ -10,72 +10,22 @@ interface ProjectsSectionProps {
   onNavigate: (id: FileId) => void;
 }
 
-const TECH_COLORS: Record<string, string> = {
-  "Next.js":          "#ffffff",
-  "React":            "#61dafb",
-  "TypeScript":       "#3178c6",
-  "JavaScript":       "#f0d040",
-  "Python":           "#4584b6",
-  "Node.js":          "#89d185",
-  "FastAPI":          "#4ec9b0",
-  "PostgreSQL":       "#336791",
-  "Redis":            "#f14c4c",
-  "Docker":           "#2496ed",
-  "AWS":              "#ff9900",
-  "Tailwind CSS":     "#38bdf8",
-  "Tailwind":         "#38bdf8",
-  "Supabase":         "#3ecf8e",
-  "Stripe":           "#635bff",
-  "Pandas":           "#4ec9b0",
-  "Scikit-learn":     "#f89939",
-  "TensorFlow":       "#ff8f00",
-  "Jupyter":          "#f37726",
-  "NLP":              "#c586c0",
-  "ML5.js":           "#c586c0",
-  "HTML5":            "#e44d26",
-  "CSS3":             "#1572b6",
-  "C":                "#a8b9cc",
-  "C++":              "#00599c",
-  "Meilisearch":      "#ff5caa",
-  "PyWebView":        "#4584b6",
-  "Starlette":        "#4ec9b0",
-  "InstantSearch.js": "#003dff",
-  "Automation":       "#c586c0",
-  "PDF Parsing":      "#f14c4c",
-  "Bilingual NLP":    "#c586c0",
-  "POSIX Threads":    "#a8b9cc",
-  "iTunes API":       "#fc3c44",
-  "Fetch API":        "#dcdcaa",
-  "CLI":              "#dcdcaa",
-  "OOP":              "#dcdcaa",
-  "Binary I/O":       "#a8b9cc",
-  "File Systems":     "#a8b9cc",
-  "Mutex":            "#a8b9cc",
-  "Semaphores":       "#a8b9cc",
-  "Matplotlib":       "#11557c",
-};
+// Tags use colours sampled from the card's top gradient (red → pink → purple)
+const TAG_PALETTE: string[] = ["#9d1515", "#c0392b", "#e05a7a", "#c586c0", "#9b59b6"];
 
-// Each tag category gets a distinct colour
-const TAG_PALETTE: string[] = [
-  "#4ec9b0", "#c586c0", "#569cd6", "#dcdcaa",
-  "#89d185", "#ce9178", "#9cdcfe", "#f14c4c",
-];
-
-function tagColor(tag: string, idx: number) {
-  // Deterministic colour per tag text
+function tagColor(tag: string) {
   const seed = tag.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  return TAG_PALETTE[(seed + idx) % TAG_PALETTE.length];
+  return TAG_PALETTE[seed % TAG_PALETTE.length];
 }
 
 function TechBadge({ tech }: { tech: string }) {
-  const color = TECH_COLORS[tech] ?? "#858585";
   return (
     <span
       className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium"
       style={{
-        background: `${color}14`,
-        border: `1px solid ${color}35`,
-        color,
+        background: "rgba(255,255,255,0.05)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        color: "var(--vsc-fg-muted)",
         fontFamily: "var(--font-mono)",
       }}
     >
@@ -115,16 +65,14 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
           (e.currentTarget as HTMLElement).style.boxShadow = "none";
         }}
       >
-        {/* Featured top bar */}
-        {project.featured && (
-          <motion.div
-            className="absolute top-0 left-0 right-0 h-[2px]"
-            style={{ background: "linear-gradient(90deg, var(--vsc-red), #c586c0)" }}
-            initial={{ scaleX: 0, originX: 0 }}
-            animate={inView ? { scaleX: 1 } : {}}
-            transition={{ delay: (index % 6) * 0.06 + 0.25, duration: 0.55, ease: "easeOut" }}
-          />
-        )}
+        {/* Gradient top bar — always visible, brightens on hover */}
+        <motion.div
+          className="absolute top-0 left-0 right-0 h-[2px]"
+          style={{ background: "linear-gradient(90deg, #9d1515, #e05a7a, #c586c0)" }}
+          initial={{ scaleX: 0, originX: 0 }}
+          animate={inView ? { scaleX: 1 } : {}}
+          transition={{ delay: (index % 6) * 0.06 + 0.2, duration: 0.55, ease: "easeOut" }}
+        />
 
         {/* Hover glow */}
         <motion.div
@@ -138,8 +86,8 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
 
           {/* ── Tags row (category + LIVE) ── */}
           <div className="flex flex-wrap items-center gap-1.5">
-            {project.tags?.map((tag, i) => {
-              const c = tagColor(tag, i);
+            {project.tags?.map((tag) => {
+              const c = tagColor(tag);
               return (
                 <span
                   key={tag}
@@ -252,9 +200,6 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
 }
 
 export function ProjectsSection({ onNavigate: _onNavigate }: ProjectsSectionProps) {
-  const featured = projects.filter((p) => p.featured);
-  const rest = projects.filter((p) => !p.featured);
-
   return (
     <div className="min-h-full pb-16">
       <div className="editor-line pt-6">
@@ -265,56 +210,10 @@ export function ProjectsSection({ onNavigate: _onNavigate }: ProjectsSectionProp
         <span className="line-number">2</span>
       </div>
 
-      <div className="px-8 lg:px-12 space-y-10 mt-4">
-
-        {/* ── Featured ── */}
-        <section>
-          <motion.div
-            className="flex items-center gap-3 mb-5"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35 }}
-          >
-            <span
-              className="text-[10px] font-bold tracking-widest uppercase"
-              style={{ color: "var(--vsc-red-light)", fontFamily: "var(--font-mono)" }}
-            >
-              ⚡ Featured
-            </span>
-            <div className="h-px flex-1" style={{ background: "var(--vsc-border)" }} />
-            <span className="text-[10px]" style={{ color: "var(--vsc-fg-dim)", fontFamily: "var(--font-mono)" }}>
-              {featured.length} projects
-            </span>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {featured.map((p, i) => <ProjectCard key={p.id} project={p} index={i} />)}
-          </div>
-        </section>
-
-        {/* ── All Projects ── */}
-        <section>
-          <motion.div
-            className="flex items-center gap-3 mb-5"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.15, duration: 0.35 }}
-          >
-            <span
-              className="text-[10px] font-bold tracking-widest uppercase"
-              style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}
-            >
-              All Projects
-            </span>
-            <div className="h-px flex-1" style={{ background: "var(--vsc-border)" }} />
-            <span className="text-[10px]" style={{ color: "var(--vsc-fg-dim)", fontFamily: "var(--font-mono)" }}>
-              {rest.length} projects
-            </span>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {rest.map((p, i) => <ProjectCard key={p.id} project={p} index={featured.length + i} />)}
-          </div>
-        </section>
-
+      <div className="px-8 lg:px-12 mt-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {projects.map((p, i) => <ProjectCard key={p.id} project={p} index={i} />)}
+        </div>
       </div>
     </div>
   );
