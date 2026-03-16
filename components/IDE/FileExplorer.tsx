@@ -196,7 +196,7 @@ export function FileExplorer({ activeFile, onFileSelect, isOpen, activityView }:
               >
                 {[
                   { label: "Files",   value: commits.length > 0 ? "7" : "—", color: "#4ec9b0" },
-                  { label: "Commits", value: totalCommits ?? commits.length || "—", color: "#89d185" },
+                  { label: "Commits", value: (totalCommits ?? commits.length) || "—", color: "#89d185" },
                   { label: "Branch",  value: "1", color: "#c586c0" },
                 ].map(({ label, value, color }, i) => (
                   <div
