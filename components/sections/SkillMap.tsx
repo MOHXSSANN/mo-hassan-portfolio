@@ -4,17 +4,11 @@ import { useMemo, useState, useRef, useEffect, useCallback } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { skillCategories } from "@/lib/skills";
 
-// ─── Color resolution ─────────────────────────────────────────────────
-const COLOR_MAP: Record<string, string> = {
-  "var(--vsc-blue)":   "#569cd6",
-  "var(--vsc-cyan)":   "#4ec9b0",
-  "var(--vsc-yellow)": "#dcdcaa",
-  "var(--vsc-orange)": "#ce9178",
-  "var(--vsc-pink)":   "#c586c0",
-  "var(--vsc-number)": "#b5cea8",
-};
-const FALLBACKS = ["#569cd6","#4ec9b0","#dcdcaa","#ce9178","#c586c0","#b5cea8"];
-const rc = (v: string, i: number) => COLOR_MAP[v] ?? FALLBACKS[i % 6];
+// ─── Theme accent color helpers ───────────────────────────────────────
+function getCssVar(name: string, fallback: string) {
+  if (typeof window === "undefined") return fallback;
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+}
 
 const AXIS_LABELS = ["Languages", "Frameworks", "Backend", "DevOps", "Security", "Testing"];
 
@@ -44,9 +38,8 @@ interface TooltipState {
   screenY: number;
 }
 
-function RadarTooltip({ tip }: { tip: TooltipState }) {
+function RadarTooltip({ tip, col }: { tip: TooltipState; col: string }) {
   const cat = skillCategories[tip.catIdx];
-  const col = rc(cat.color, tip.catIdx);
 
   // Smart placement: flip left if near right edge
   const W = 172, ROW = 20;
@@ -112,12 +105,27 @@ export function SkillMap() {
   const [hovered, setHovered] = useState<number | null>(null);
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
 
+  // Read accent color from active theme CSS variables
+  const [accentLight, setAccentLight] = useState("#c0392b");
+  const [accentMain,  setAccentMain]  = useState("#9d1515");
+  useEffect(() => {
+    const update = () => {
+      setAccentLight(getCssVar("--vsc-red-light", "#c0392b"));
+      setAccentMain(getCssVar("--vsc-red",        "#9d1515"));
+    };
+    update();
+    // Re-read when theme changes on <html>
+    const obs = new MutationObserver(update);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "style"] });
+    return () => obs.disconnect();
+  }, []);
+
   const avgs       = useMemo(() => skillCategories.map((_, i) => catAvg(i)), []);
   const dataPoints = useMemo(() => avgs.map((a, i) => radarPt(a, i)), [avgs]);
   const fullPoly   = useMemo(() => toPoly(dataPoints), [dataPoints]);
   const zeroPoly   = useMemo(() => toPoly(Array(N).fill({ x: CX, y: CY })), []);
 
-  // Close tooltip on any scroll (capture phase catches EditorCanvas scroll too)
+  // Close tooltip on any scroll
   useEffect(() => {
     const dismiss = () => { setHovered(null); setTooltip(null); };
     window.addEventListener("scroll", dismiss, true);
@@ -146,7 +154,6 @@ export function SkillMap() {
     setTooltip(null);
   }, []);
 
-  // Click on already-active vertex → dismiss
   const handleClick = useCallback((i: number) => {
     if (hovered === i) { setHovered(null); setTooltip(null); }
   }, [hovered]);
@@ -180,9 +187,9 @@ export function SkillMap() {
             <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <radialGradient id="rdr-fill" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor="#9d1515" stopOpacity="0.55" />
-            <stop offset="60%"  stopColor="#9d1515" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#9d1515" stopOpacity="0.05" />
+            <stop offset="0%"   stopColor={accentMain} stopOpacity="0.55" />
+            <stop offset="60%"  stopColor={accentMain} stopOpacity="0.22" />
+            <stop offset="100%" stopColor={accentMain} stopOpacity="0.05" />
           </radialGradient>
         </defs>
 
@@ -215,12 +222,11 @@ export function SkillMap() {
         {/* Axis lines */}
         {skillCategories.map((cat, i) => {
           const tip = axisTip(i);
-          const col = rc(cat.color, i);
           const isAct = hovered === i;
           return (
             <motion.line key={cat.key}
               x1={CX} y1={CY} x2={tip.x} y2={tip.y}
-              stroke={isAct ? col : "rgba(255,255,255,0.10)"}
+              stroke={isAct ? accentLight : "rgba(255,255,255,0.10)"}
               strokeWidth={isAct ? 1.5 : 0.8}
               initial={{ opacity: 0 }} animate={{ opacity: inView ? 1 : 0 }}
               transition={{ duration: 0.5, delay: 0.25 + i * 0.07 }}
@@ -232,14 +238,13 @@ export function SkillMap() {
         {/* Active wedge highlight */}
         <AnimatePresence>
           {hovered !== null && (() => {
-            const col  = rc(skillCategories[hovered].color, hovered);
             const tip  = axisTip(hovered);
             const prev = axisTip((hovered - 1 + N) % N);
             const next = axisTip((hovered + 1) % N);
             return (
               <motion.polygon key={`w-${hovered}`}
                 points={`${CX},${CY} ${prev.x},${prev.y} ${tip.x},${tip.y} ${next.x},${next.y}`}
-                fill={col} fillOpacity={0.07} stroke={col} strokeWidth="0.5" strokeOpacity={0.25}
+                fill={accentLight} fillOpacity={0.07} stroke={accentLight} strokeWidth="0.5" strokeOpacity={0.25}
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               />
@@ -257,20 +262,19 @@ export function SkillMap() {
         {/* Data polygon — stroke */}
         <motion.polygon
           points={zeroPoly} animate={{ points: inView ? fullPoly : zeroPoly }}
-          fill="none" stroke="#9d1515" strokeWidth="2" strokeLinejoin="round"
+          fill="none" stroke={accentMain} strokeWidth="2" strokeLinejoin="round"
           transition={{ duration: 1.1, delay: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
           style={{ filter: "url(#rdr-glow)" }}
         />
 
         {/* Centre dot */}
-        <motion.circle cx={CX} cy={CY} r={3} fill="#9d1515"
+        <motion.circle cx={CX} cy={CY} r={3} fill={accentMain}
           initial={{ opacity: 0 }} animate={{ opacity: inView ? 0.8 : 0 }}
           transition={{ duration: 0.3, delay: 0.6 }}
         />
 
         {/* Per-vertex: dot + label + % */}
         {skillCategories.map((cat, i) => {
-          const col   = rc(cat.color, i);
           const pt    = dataPoints[i];
           const tip   = axisTip(i);
           const a     = ang(i);
@@ -278,6 +282,7 @@ export function SkillMap() {
           const lx    = CX + lR * Math.cos(a);
           const ly    = CY + lR * Math.sin(a);
           const isAct = hovered === i;
+          const col   = isAct ? accentLight : accentLight;
 
           const anchor = Math.abs(Math.cos(a)) < 0.25 ? "middle" : Math.cos(a) > 0 ? "start" : "end";
           const dy     = Math.sin(a) > 0.6 ? 12 : Math.sin(a) < -0.6 ? -4 : 0;
@@ -338,7 +343,7 @@ export function SkillMap() {
 
       {/* ── Fixed tooltip — rendered outside SVG, never scrolls ── */}
       <AnimatePresence>
-        {tooltip !== null && <RadarTooltip key={tooltip.catIdx} tip={tooltip} />}
+        {tooltip !== null && <RadarTooltip key={tooltip.catIdx} tip={tooltip} col={accentLight} />}
       </AnimatePresence>
     </div>
   );

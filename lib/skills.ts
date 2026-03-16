@@ -14,7 +14,7 @@ export const skillCategories: SkillCategory[] = [
   {
     key: "languages",
     name: "Languages",
-    color: "var(--vsc-blue)",
+    color: "#e05a5a",
     skills: [
       { name: "Python",             level: 90 },
       { name: "JavaScript",         level: 88 },
@@ -29,7 +29,7 @@ export const skillCategories: SkillCategory[] = [
   {
     key: "frameworks",
     name: "Frameworks & Libraries",
-    color: "var(--vsc-cyan)",
+    color: "#c0392b",
     skills: [
       { name: "React.js",           level: 85 },
       { name: "Node.js",            level: 82 },
@@ -44,20 +44,20 @@ export const skillCategories: SkillCategory[] = [
   {
     key: "backend_search",
     name: "Backend & Search",
-    color: "var(--vsc-yellow)",
+    color: "#9d1515",
     skills: [
       { name: "Meilisearch",        level: 85 },
       { name: "REST APIs",          level: 90 },
       { name: "InstantSearch.js",   level: 80 },
-      { name: "Pydantic",           level: 78 },
-      { name: "Typer (CLI)",        level: 80 },
-      { name: "ML5.js",             level: 72 },
+      { name: "Pydantic",           level: 35 },
+      { name: "Typer (CLI)",        level: 30 },
+      { name: "ML5.js",             level: 28 },
     ],
   },
   {
     key: "tools_devops",
     name: "Tools & DevOps",
-    color: "var(--vsc-orange)",
+    color: "#e07a5a",
     skills: [
       { name: "Git / GitHub",       level: 92 },
       { name: "Linux",              level: 82 },
@@ -69,19 +69,19 @@ export const skillCategories: SkillCategory[] = [
   {
     key: "cybersecurity",
     name: "Cybersecurity",
-    color: "var(--vsc-pink)",
+    color: "#cc3333",
     skills: [
       { name: "Secure API Design",  level: 82 },
       { name: "Network Config",     level: 78 },
       { name: "NAT / Firewall",     level: 75 },
-      { name: "Auth & Access Ctrl", level: 80 },
+      { name: "Auth & Access Ctrl", level: 32 },
       { name: "QA / Pen Testing",   level: 72 },
     ],
   },
   {
     key: "testing",
     name: "Testing & QA",
-    color: "var(--vsc-number)",
+    color: "#b52020",
     skills: [
       { name: "Test Planning",      level: 88 },
       { name: "Regression Testing", level: 85 },
