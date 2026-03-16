@@ -14,6 +14,19 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: "mo-hassan-portfolio",
+    name: "VS Code Portfolio",
+    description:
+      "This portfolio — built as a fully interactive VS Code IDE in the browser. Features a file explorer, tabbed editor, interactive terminal, command palette, theme switcher, source control panel with live GitHub data, and custom cursor.",
+    tech: ["Next.js", "TypeScript", "Framer Motion", "Tailwind CSS"],
+    repo: "https://github.com/MOHXSSANN/mo-hassan-portfolio",
+    tags: ["FULL STACK", "UI/UX", "META"],
+    featured: true,
+    status: "live",
+    year: "2026",
+    emoji: "💻",
+  },
+  {
     id: "radiance-vault",
     name: "Radiance Vault",
     description:
@@ -62,7 +75,7 @@ export const projects: Project[] = [
     tags: ["FRONTEND", "UI/UX"],
     featured: false,
     status: "live",
-    year: "2024",
+    year: "2026",
     emoji: "🍰",
   },
   {
