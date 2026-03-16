@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail, ExternalLink } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { siteConfig } from "@/lib/siteConfig";
 import { skillCategories } from "@/lib/skills";
 import type { FileId } from "@/hooks/useIDEState";
@@ -11,201 +10,175 @@ interface ReadmeSectionProps {
   onNavigate: (id: FileId) => void;
 }
 
-function LineNumber({ n }: { n: number }) {
-  return <span className="line-number">{n}</span>;
-}
+const TECH_BADGE_COLORS: Record<string, { bg: string; text: string }> = {
+  Python:           { bg: "#3572a5", text: "#fff" },
+  TypeScript:       { bg: "#3178c6", text: "#fff" },
+  JavaScript:       { bg: "#f0d040", text: "#111" },
+  "Next.js":        { bg: "#ffffff", text: "#111" },
+  "React.js":       { bg: "#61dafb", text: "#111" },
+  "Tailwind CSS":   { bg: "#38bdf8", text: "#111" },
+  Meilisearch:      { bg: "#ff5caa", text: "#fff" },
+  "Node.js":        { bg: "#6da55f", text: "#fff" },
+  Docker:           { bg: "#2496ed", text: "#fff" },
+  Linux:            { bg: "#fcc624", text: "#111" },
+  "Git / GitHub":   { bg: "#f34f29", text: "#fff" },
+  "REST APIs":      { bg: "#6ead3a", text: "#fff" },
+  "SQL / MySQL":    { bg: "#4479a1", text: "#fff" },
+  "C / C++":        { bg: "#659ad2", text: "#fff" },
+  JIRA:             { bg: "#0052cc", text: "#fff" },
+  PyWebView:        { bg: "#c586c0", text: "#fff" },
+  Starlette:        { bg: "#4ec9b0", text: "#111" },
+};
 
-function ShieldBadge({ label, value, color }: { label: string; value: string; color: string }) {
+function TechPill({ name }: { name: string }) {
+  const colors = TECH_BADGE_COLORS[name] ?? { bg: "rgba(255,255,255,0.08)", text: "var(--vsc-fg-muted)" };
   return (
     <span
-      className="inline-flex items-center rounded overflow-hidden text-[10px] font-bold select-none"
-      style={{ fontFamily: "var(--font-mono)", border: "1px solid rgba(255,255,255,0.1)" }}
+      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+      style={{ background: colors.bg, color: colors.text, fontFamily: "var(--font-mono)" }}
     >
-      <span className="px-2 py-0.5" style={{ background: "#555", color: "#fff" }}>{label}</span>
-      <span className="px-2 py-0.5" style={{ background: color, color: "#fff" }}>{value}</span>
+      {name}
     </span>
   );
 }
 
-export function ReadmeSection({ onNavigate }: ReadmeSectionProps) {
+function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-full py-8 pb-16">
-      <div className="editor-line"><LineNumber n={1} /><span className="token-comment">&lt;!-- README.md — the repo behind the person --&gt;</span></div>
-      <div className="editor-line"><LineNumber n={2} /></div>
+    <h2
+      className="font-black mb-5"
+      style={{ color: "#ffffff", fontFamily: "var(--font-display)", fontSize: "1.9rem", letterSpacing: "-0.02em" }}
+    >
+      {children}
+    </h2>
+  );
+}
 
-      <div className="px-12 py-6 max-w-3xl">
+export function ReadmeSection({ onNavigate: _onNavigate }: ReadmeSectionProps) {
+  const topTech = ["Python", "TypeScript", "Next.js", "Meilisearch", "Docker", "Starlette"];
+
+  return (
+    <div className="min-h-full pb-16">
+      <div className="px-10 lg:px-16 pt-10 max-w-3xl space-y-12">
+
+        {/* ── Name + tagline + badges ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <h1
+            className="font-black leading-none mb-3"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(2.8rem, 6vw, 4.5rem)",
+              color: "#ffffff",
+              letterSpacing: "-0.03em",
+            }}
+          >
+            Mo Hassan
+          </h1>
+
+          <p className="mb-5 text-base" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-display)" }}>
+            Junior Developer @ CBSA &nbsp;·&nbsp; Ottawa, Ontario
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {topTech.map((t) => <TechPill key={t} name={t} />)}
+          </div>
+        </motion.div>
+
+        {/* ── About ── */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          className="space-y-8"
+          transition={{ delay: 0.08, duration: 0.4, ease: "easeOut" }}
         >
-          {/* H1 */}
-          <div>
-            <div className="editor-line mb-3"><LineNumber n={3} /><span className="token-brand text-base font-bold" style={{ fontFamily: "var(--font-mono)" }}># Mo Hassan</span></div>
-            <h1
-              className="font-black mt-2 mb-1"
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                color: "#ffffff",
-                letterSpacing: "-0.03em",
-                lineHeight: 1.05,
-              }}
-            >
-              Mo Hassan
-            </h1>
-            <p
-              className="text-sm mb-5"
-              style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-display)" }}
-            >
-              {siteConfig.roles[0]?.label} · {siteConfig.location}
-            </p>
-
-            {/* Badge row */}
-            <div className="flex flex-wrap gap-2">
-              <ShieldBadge label="status" value={siteConfig.availableForWork ? "available" : "unavailable"} color={siteConfig.availableForWork ? "#6a9955" : "#858585"} />
-              <ShieldBadge label="focus" value="building" color="var(--vsc-red)" />
-              <ShieldBadge label="location" value={siteConfig.location} color="#569cd6" />
-              <ShieldBadge label="license" value="open source" color="#c586c0" />
-            </div>
-          </div>
-
-          <Separator style={{ background: "var(--vsc-border)" }} />
-
-          {/* About section */}
-          <div>
-            <div className="editor-line mb-3"><LineNumber n={10} /><span className="token-brand font-bold" style={{ fontFamily: "var(--font-mono)", fontSize: "0.9rem" }}>## About</span></div>
-            <div className="space-y-2">
-              {siteConfig.about.paragraphs.map((p, i) => (
-                <p
-                  key={i}
-                  className="text-sm leading-relaxed"
-                  style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-display)", lineHeight: 1.7 }}
-                >
-                  {p}
-                </p>
-              ))}
-            </div>
-
-            <ul className="mt-4 space-y-1.5">
-              {siteConfig.about.highlights.map((h, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-display)" }}>
-                  <span style={{ color: "var(--vsc-red-light)" }}>🔺</span>
-                  <span>{h}</span>
-                </li>
-              ))}
-              <li className="flex items-start gap-2 text-sm" style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-display)" }}>
-                <span>⚡</span>
-                <span>Always learning, always shipping</span>
+          <SectionHeading>About</SectionHeading>
+          <p
+            className="mb-5 leading-relaxed"
+            style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-display)", fontSize: "15px", lineHeight: 1.8 }}
+          >
+            Hi, Mo on this side! Third-year Computer Science student at Carleton University specializing in Cybersecurity.
+            I work as a Junior Developer at CBSA building Radiance Vault, a secure document search and classification platform.
+            Outside of code I run Ottawa Volleyball Revival, hosting tournaments with 150+ attendees.
+            I care deeply about psychology, human behavior, and building things that actually matter.
+          </p>
+          <ul className="space-y-2">
+            {[
+              { text: "Building Radiance Vault at CBSA: secure document search & classification" },
+              { text: "Deep interest in AI/ML integration into production systems" },
+              { text: "Founder of OVR (@ovrleague): volleyball league & tournaments" },
+              { text: "Talk to me about Python, TypeScript, full-stack dev, or security" },
+              { text: "Always learning, always growing" },
+            ].map(({ text }, i) => (
+              <li key={i} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-display)", fontSize: "14px" }}>
+                <span style={{ color: "var(--vsc-red-light)", fontFamily: "var(--font-mono)", fontSize: "11px", marginTop: "3px", flexShrink: 0 }}>▸</span>
+                <span>{text}</span>
               </li>
-            </ul>
-          </div>
+            ))}
+          </ul>
+        </motion.div>
 
-          <Separator style={{ background: "var(--vsc-border)" }} />
-
-          {/* Tech stack */}
-          <div>
-            <div className="editor-line mb-4"><LineNumber n={20} /><span className="token-brand font-bold" style={{ fontFamily: "var(--font-mono)", fontSize: "0.9rem" }}>## Tech Stack</span></div>
-            <div className="space-y-3">
-              {skillCategories.slice(0, 4).map((cat) => (
-                <div key={cat.key} className="flex items-start gap-3">
-                  <span
-                    className="text-xs shrink-0 w-28"
-                    style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}
-                  >
-                    {cat.name}:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {cat.skills.slice(0, 5).map((s) => (
-                      <span
-                        key={s.name}
-                        className="text-[10px] px-2 py-0.5 rounded font-medium"
-                        style={{
-                          background: "var(--vsc-sidebar-bg)",
-                          border: `1px solid ${cat.color}40`,
-                          color: cat.color,
-                          fontFamily: "var(--font-mono)",
-                        }}
-                      >
-                        {s.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <Separator style={{ background: "var(--vsc-border)" }} />
-
-          {/* GitHub Stats — decorative cards */}
-          <div>
-            <div className="editor-line mb-4"><LineNumber n={30} /><span className="token-brand font-bold" style={{ fontFamily: "var(--font-mono)", fontSize: "0.9rem" }}>## Stats</span></div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {Object.entries(siteConfig.stats).map(([key, val]) => (
-                <div
-                  key={key}
-                  className="rounded-lg p-3 text-center"
-                  style={{
-                    background: "var(--vsc-sidebar-bg)",
-                    border: "1px solid var(--vsc-border)",
-                  }}
+        {/* ── Stack ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.14, duration: 0.4, ease: "easeOut" }}
+        >
+          <SectionHeading>Stack</SectionHeading>
+          <div className="space-y-3">
+            {[
+              { label: "Languages",  skills: ["Python", "TypeScript", "JavaScript", "C / C++", "SQL / MySQL"] },
+              { label: "Frontend",   skills: ["Next.js", "React.js", "Tailwind CSS"] },
+              { label: "Backend",    skills: ["Node.js", "Starlette", "REST APIs", "Meilisearch", "PyWebView"] },
+              { label: "DevOps",     skills: ["Docker", "Linux", "Git / GitHub", "JIRA"] },
+            ].map(({ label, skills }) => (
+              <div key={label} className="flex items-start gap-4">
+                <span
+                  className="shrink-0 text-sm font-semibold w-24"
+                  style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-display)", paddingTop: "2px" }}
                 >
-                  <div
-                    className="text-xl font-black"
-                    style={{ color: "var(--vsc-red-light)", fontFamily: "var(--font-display)", letterSpacing: "-0.02em" }}
-                  >
-                    {val}
-                  </div>
-                  <div
-                    className="text-[9px] uppercase tracking-widest mt-0.5"
-                    style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-display)" }}
-                  >
-                    {key.replace(/([A-Z])/g, " $1").trim()}
-                  </div>
+                  {label}:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {skills.map((s) => <TechPill key={s} name={s} />)}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <Separator style={{ background: "var(--vsc-border)" }} />
-
-          {/* Connect */}
-          <div>
-            <div className="editor-line mb-4"><LineNumber n={40} /><span className="token-brand font-bold" style={{ fontFamily: "var(--font-mono)", fontSize: "0.9rem" }}>## Connect</span></div>
-            <div className="flex flex-wrap gap-4">
-              {[
-                { icon: Github,   label: "GitHub",   href: siteConfig.socials.github },
-                { icon: Linkedin, label: "LinkedIn",  href: siteConfig.socials.linkedin },
-                { icon: Mail,     label: "Email",     href: siteConfig.socials.email },
-              ].map(({ icon: Icon, label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-sm transition-colors focus-visible:outline-none"
-                  style={{ color: "var(--vsc-blue)", fontFamily: "var(--font-mono)" }}
-                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--vsc-red-light)")}
-                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--vsc-blue)")}
-                >
-                  <Icon size={14} />
-                  <span>{label}</span>
-                  <ExternalLink size={10} />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <Separator style={{ background: "var(--vsc-border)" }} />
-
-          {/* Footer */}
-          <div className="editor-line">
-            <LineNumber n={50} />
-            <span className="token-comment">// Made with curiosity in VS Code · Always shipping</span>
+              </div>
+            ))}
           </div>
         </motion.div>
+
+        {/* ── Connect ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
+        >
+          <SectionHeading>Connect</SectionHeading>
+          <div className="flex flex-wrap gap-5">
+            {[
+              { icon: Github,   label: "GitHub",   href: siteConfig.socials.github },
+              { icon: Linkedin, label: "LinkedIn",  href: siteConfig.socials.linkedin },
+              { icon: Mail,     label: "Email",     href: siteConfig.socials.email },
+            ].map(({ icon: Icon, label, href }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-sm font-medium"
+                style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-display)", textDecoration: "none" }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--vsc-red-light)")}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "var(--vsc-fg)")}
+              >
+                <Icon size={15} />
+                {label}
+                <ExternalLink size={11} style={{ opacity: 0.5 }} />
+              </a>
+            ))}
+          </div>
+        </motion.div>
+
       </div>
     </div>
   );
