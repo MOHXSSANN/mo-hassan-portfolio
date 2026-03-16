@@ -13,7 +13,7 @@ export const siteConfig = {
 
   tagline: "Always learning, always shipping ⚡",
 
-  bio: "I live at the crossroads of **full-stack development**, **cybersecurity**, and **backend engineering**. I build systems that are **secure**, **scalable**, and genuinely **impactful**.",
+  bio: "Third-year **CS student** at Carleton, working as a **Junior Developer at CBSA** by day and tinkering with **AI and backend systems** by night. I care about writing code that's **fast**, **secure**, and actually **solves real problems**.",
 
   description:
     "Portfolio of Mo Hassan — Computer Science student & Junior Developer at CBSA specializing in full-stack development, cybersecurity, and backend engineering.",
@@ -35,7 +35,7 @@ export const siteConfig = {
   },
 
   stats: {
-    yearsExperience:      "2+",
+    yearsExperience:      "3+",
     projectsShipped:      "10+",
     technologiesMastered: "20+",
     alwaysLearning:       "∞",

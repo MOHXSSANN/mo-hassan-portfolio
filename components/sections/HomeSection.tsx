@@ -17,11 +17,11 @@ interface HomeSectionProps {
 
 // ── Cycling typewriter hook ───────────────────────────────────────────
 const TAGLINES = [
-  "Always learning, always shipping ⚡",
-  "Building things that actually work 🔧",
-  "Turning coffee into scalable systems ☕",
   "Backend by day, AI tinkerer by night 🤖",
-  "Shipping code, breaking prod, fixing prod 🚀",
+  "Junior Dev @ CBSA — building real gov systems ⚙️",
+  "Turning caffeine into secure, scalable code ☕",
+  "CS student who actually ships things 🚀",
+  "Always learning, always shipping ⚡",
 ];
 
 function useCyclingTypewriter(speed = 38, deleteSpeed = 22, pauseMs = 1800, startDelay = 800) {
