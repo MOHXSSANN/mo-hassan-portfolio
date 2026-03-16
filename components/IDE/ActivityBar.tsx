@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Files, Search, GitBranch, Download, Cog } from "lucide-react";
+import { Files, Search, GitBranch, Download, Cog, Bot } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -16,6 +16,8 @@ interface ActivityBarProps {
   onOpenPalette: () => void;
   onOpenSettings: () => void;
   settingsOpen: boolean;
+  copilotOpen?: boolean;
+  onToggleCopilot?: () => void;
 }
 
 type SidebarItem = { type: "view"; view: ActivityView; icon: React.ElementType; label: string };
@@ -29,6 +31,8 @@ export function ActivityBar({
   onOpenPalette,
   onOpenSettings,
   settingsOpen,
+  copilotOpen,
+  onToggleCopilot,
 }: ActivityBarProps) {
   const [hovered, setHovered] = useState<string | null>(null);
 
@@ -139,8 +143,54 @@ export function ActivityBar({
         })}
       </div>
 
-      {/* Bottom: settings + profile */}
+      {/* Bottom: copilot + settings + profile */}
       <div className="flex flex-col items-center gap-0.5 w-full pb-1">
+        {/* Copilot icon */}
+        {onToggleCopilot && (
+          <Tooltip>
+            <TooltipTrigger
+              onClick={onToggleCopilot}
+              onMouseEnter={() => setHovered("copilot")}
+              onMouseLeave={() => setHovered(null)}
+              className="flex items-center justify-center w-full focus-visible:outline-none"
+              style={{
+                height: "56px",
+                cursor: "pointer",
+                color:
+                  copilotOpen || hovered === "copilot"
+                    ? "var(--vsc-red-light)"
+                    : "var(--vsc-fg-muted)",
+                background: copilotOpen
+                  ? "var(--vsc-active-bg)"
+                  : hovered === "copilot"
+                  ? "rgba(255,255,255,0.06)"
+                  : "transparent",
+                borderLeft: copilotOpen
+                  ? "2px solid var(--vsc-red-light)"
+                  : "2px solid transparent",
+                transition: "color 0.15s, background 0.15s",
+              }}
+              aria-label="Mo's Copilot"
+            >
+              <Bot
+                size={26}
+                strokeWidth={1.4}
+                style={{
+                  transform: hovered === "copilot" ? "scale(1.15)" : "scale(1)",
+                  transition: "transform 0.15s ease",
+                }}
+              />
+            </TooltipTrigger>
+            <TooltipContent
+              side="right"
+              sideOffset={8}
+              className="!bg-[#111] !text-white !border !border-[#555] !rounded !px-2.5 !py-1 !text-xs !font-sans shadow-lg"
+            >
+              Mo&apos;s Copilot
+            </TooltipContent>
+          </Tooltip>
+        )}
+
         {/* Settings icon */}
         <Tooltip>
           <TooltipTrigger

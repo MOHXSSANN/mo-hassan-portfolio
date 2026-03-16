@@ -20,7 +20,7 @@ const TAGLINES = [
   "Backend by day, AI tinkerer by night 🤖",
   "Junior Dev @ CBSA — building real gov systems ⚙️",
   "Turning caffeine into secure, scalable code ☕",
-  "CS student who actually ships things 🚀",
+  "CS student who actually builds things 🚀",
   "Always learning, always growing ⚡",
 ];
 

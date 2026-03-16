@@ -14,6 +14,7 @@ import { StatusBar } from "./StatusBar";
 import { MobileNav } from "./MobileNav";
 import { CommandPalette } from "./CommandPalette";
 import { SettingsPanel } from "./SettingsPanel";
+import { CopilotPanel } from "./CopilotPanel";
 import { CustomCursor } from "./CustomCursor";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -29,6 +30,7 @@ export function IDELayout() {
   const [settingsOpen,       setSettingsOpen]        = useState(false);
   const [terminalOpen,       setTerminalOpen]        = useState(false);
   const [terminalClearCount, setTerminalClearCount]  = useState(0);
+  const [copilotOpen,        setCopilotOpen]         = useState(false);
   const { themeId, changeTheme } = useTheme();
 
   // Global keyboard shortcuts
@@ -58,6 +60,7 @@ export function IDELayout() {
       if (e.key === "Escape") {
         setPaletteOpen(false);
         setSettingsOpen(false);
+        setCopilotOpen(false);
         return;
       }
     };
@@ -113,6 +116,8 @@ export function IDELayout() {
             onOpenPalette={() => setPaletteOpen(true)}
             onOpenSettings={() => setSettingsOpen((p) => !p)}
             settingsOpen={settingsOpen}
+            copilotOpen={copilotOpen}
+            onToggleCopilot={() => setCopilotOpen((p) => !p)}
           />
 
           {/* File explorer */}
@@ -148,6 +153,12 @@ export function IDELayout() {
               clearTrigger={terminalClearCount}
             />
           </div>
+
+          {/* Copilot panel — slides in from the right */}
+          <CopilotPanel
+            isOpen={copilotOpen}
+            onClose={() => setCopilotOpen(false)}
+          />
         </div>
 
         {/* Row 3 — Status bar / Mobile nav */}

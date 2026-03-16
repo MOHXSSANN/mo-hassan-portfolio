@@ -216,7 +216,7 @@ export function ProjectsSection({ onNavigate: _onNavigate }: ProjectsSectionProp
     <div className="min-h-full pb-16">
       <div className="editor-line pt-6">
         <span className="line-number">1</span>
-        <span className="token-comment">// projects.ts — things I&apos;ve shipped</span>
+        <span className="token-comment">// projects.ts — things I&apos;ve built</span>
       </div>
       <div className="editor-line mb-1">
         <span className="line-number">2</span>
