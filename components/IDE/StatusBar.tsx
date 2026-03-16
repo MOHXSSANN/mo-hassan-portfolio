@@ -164,7 +164,7 @@ export function StatusBar({ activeFile, themeId, onThemeChange, onToggleTerminal
         paddingLeft: "4px",
         paddingRight: "4px",
         background: "var(--vsc-statusbar-bg)",
-        color: "rgba(255,255,255,0.95)",
+        color: "var(--vsc-statusbar-fg)",
         fontFamily: "var(--font-display)",
         fontSize: "12px",
         whiteSpace: "nowrap",
