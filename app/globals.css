@@ -13,6 +13,7 @@
   --vsc-tab-active-bg:    #1e1e1e;
   --vsc-tab-inactive-bg:  #2d2d2d;
   --vsc-statusbar-bg:     #9d1515;
+  --vsc-statusbar-fg:     rgba(255,255,255,0.95);
   --vsc-border:           #3c3c3c;
   --vsc-scrollbar:        #424242;
   --vsc-input-bg:         #3c3c3c;
@@ -49,7 +50,7 @@
 
   /* Fonts */
   --font-mono: var(--font-geist-mono), 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
-  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-abel), ui-sans-serif, system-ui, sans-serif;
 
   /* shadcn required tokens (mapped to our VS Code theme) */
   --background: #1e1e1e;
@@ -102,7 +103,7 @@ html, body {
 .token-type      { color: var(--vsc-cyan); }
 .token-fn        { color: var(--vsc-yellow); }
 .token-string    { color: var(--vsc-orange); }
-.token-comment   { color: var(--vsc-green); font-style: italic; }
+.token-comment   { color: var(--vsc-green); font-style: italic; font-size: 1.25rem; }
 .token-number    { color: var(--vsc-number); }
 .token-control   { color: var(--vsc-pink); }
 .token-variable  { color: var(--vsc-light-blue); }
