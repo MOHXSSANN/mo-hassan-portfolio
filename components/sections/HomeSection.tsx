@@ -73,7 +73,7 @@ function BioText({ text }: { text: string }) {
     <>
       {parts.map((part, i) =>
         part.startsWith("**") && part.endsWith("**") ? (
-          <strong key={i} style={{ color: "var(--vsc-cyan)", fontWeight: 600 }}>
+          <strong key={i} style={{ color: "var(--vsc-red-light)", fontWeight: 600 }}>
             {part.slice(2, -2)}
           </strong>
         ) : (

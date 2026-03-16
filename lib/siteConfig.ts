@@ -9,6 +9,7 @@ export const siteConfig = {
     { label: "Cybersecurity Student",   color: "#c586c0" },
     { label: "Software Tester",         color: "#569cd6" },
     { label: "@ CBSA",                  color: "#9d1515" },
+    { label: "Volleyball Enthusiast",   color: "#dcdcaa" },
   ],
 
   tagline: "Always learning, always shipping ⚡",
