@@ -1,0 +1,103 @@
+export interface Skill {
+  name: string;
+  level: number; // 0-100
+}
+
+export interface SkillCategory {
+  key: string;
+  name: string;
+  color: string;
+  skills: Skill[];
+}
+
+export const skillCategories: SkillCategory[] = [
+  {
+    key: "languages",
+    name: "Languages",
+    color: "var(--vsc-blue)",
+    skills: [
+      { name: "Python",             level: 90 },
+      { name: "JavaScript",         level: 88 },
+      { name: "TypeScript",         level: 85 },
+      { name: "C / C++",            level: 78 },
+      { name: "SQL / MySQL",        level: 80 },
+      { name: "HTML5 / CSS3",       level: 88 },
+      { name: "Java",               level: 70 },
+      { name: "R",                  level: 65 },
+    ],
+  },
+  {
+    key: "frameworks",
+    name: "Frameworks & Libraries",
+    color: "var(--vsc-cyan)",
+    skills: [
+      { name: "React.js",           level: 85 },
+      { name: "Node.js",            level: 82 },
+      { name: "Express.js",         level: 80 },
+      { name: "Angular",            level: 70 },
+      { name: "Tailwind CSS",       level: 90 },
+      { name: "Shiny (Python)",     level: 75 },
+      { name: "PyWebView",          level: 78 },
+      { name: "Starlette",          level: 76 },
+    ],
+  },
+  {
+    key: "backend_search",
+    name: "Backend & Search",
+    color: "var(--vsc-yellow)",
+    skills: [
+      { name: "Meilisearch",        level: 85 },
+      { name: "REST APIs",          level: 90 },
+      { name: "InstantSearch.js",   level: 80 },
+      { name: "Pydantic",           level: 78 },
+      { name: "Typer (CLI)",        level: 80 },
+      { name: "ML5.js",             level: 72 },
+    ],
+  },
+  {
+    key: "tools_devops",
+    name: "Tools & DevOps",
+    color: "var(--vsc-orange)",
+    skills: [
+      { name: "Git / GitHub",       level: 92 },
+      { name: "Linux",              level: 82 },
+      { name: "Docker",             level: 75 },
+      { name: "JIRA",               level: 88 },
+      { name: "XRAY",               level: 85 },
+    ],
+  },
+  {
+    key: "cybersecurity",
+    name: "Cybersecurity",
+    color: "var(--vsc-pink)",
+    skills: [
+      { name: "Secure API Design",  level: 82 },
+      { name: "Network Config",     level: 78 },
+      { name: "NAT / Firewall",     level: 75 },
+      { name: "Auth & Access Ctrl", level: 80 },
+      { name: "QA / Pen Testing",   level: 72 },
+    ],
+  },
+  {
+    key: "testing",
+    name: "Testing & QA",
+    color: "var(--vsc-number)",
+    skills: [
+      { name: "Test Planning",      level: 88 },
+      { name: "Regression Testing", level: 85 },
+      { name: "Automated Testing",  level: 78 },
+      { name: "Sanity Testing",     level: 88 },
+      { name: "End-to-End Testing", level: 82 },
+    ],
+  },
+];
+
+export const alsoFamiliarWith = [
+  "C#", "Binary I/O", "File Systems", "OOP",
+  "Materialize CSS", "Canvas API", "Computer Vision",
+  "Document Parsing", "PDF / DOCX Processing", "MHTML",
+  "Process Orchestration", "Structured Logging", "Microservices",
+  "Real-time Search", "Typo-tolerant Search", "API Key Auth",
+  "Agile / Scrum", "CU Blueprint", "Video Surveillance Systems",
+  "NAT Traversal", "DVR / NVR Testing",
+];
