@@ -10,31 +10,21 @@ interface ProjectsSectionProps {
   onNavigate: (id: FileId) => void;
 }
 
-// Gradient stops shared by both the top bar and the tag word colours
-const GRAD_STOPS = ["#c0392b", "#e05a7a", "#c586c0", "#9b59b6"];
+// One solid accent colour per project, consistent across tags + top line
+const PROJECT_COLORS: string[] = [
+  "#c0392b", // red
+  "#e05a7a", // pink
+  "#c586c0", // purple
+  "#569cd6", // blue
+  "#4ec9b0", // teal
+  "#89d185", // green
+  "#dcdcaa", // yellow
+  "#ce9178", // orange
+];
 
-/** Evenly spread colours across the gradient stops, one per tag */
-function tagColors(tags: string[]): string[] {
-  if (tags.length === 0) return [];
-  if (tags.length === 1) return [GRAD_STOPS[0]];
-  return tags.map((_, i) => {
-    const pos = (i / (tags.length - 1)) * (GRAD_STOPS.length - 1);
-    const lo  = Math.floor(pos);
-    const hi  = Math.min(lo + 1, GRAD_STOPS.length - 1);
-    const t   = pos - lo;
-    const f   = GRAD_STOPS[lo];
-    const to  = GRAD_STOPS[hi];
-    const r = Math.round(parseInt(f.slice(1,3),16)*(1-t) + parseInt(to.slice(1,3),16)*t);
-    const g = Math.round(parseInt(f.slice(3,5),16)*(1-t) + parseInt(to.slice(3,5),16)*t);
-    const b = Math.round(parseInt(f.slice(5,7),16)*(1-t) + parseInt(to.slice(5,7),16)*t);
-    return `rgb(${r},${g},${b})`;
-  });
-}
-
-function tagsGradient(colors: string[]): string {
-  if (colors.length === 0) return `linear-gradient(90deg, ${GRAD_STOPS[0]}, ${GRAD_STOPS[GRAD_STOPS.length - 1]})`;
-  if (colors.length === 1) return colors[0];
-  return `linear-gradient(90deg, ${colors.join(", ")})`;
+function projectColor(id: string): string {
+  const seed = id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  return PROJECT_COLORS[seed % PROJECT_COLORS.length];
 }
 
 function TechBadge({ tech }: { tech: string }) {
@@ -58,9 +48,8 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
   const inView = useInView(ref, { once: true, margin: "-50px" });
   const [hovered, setHovered] = useState(false);
 
-  const tags    = project.tags ?? [];
-  const colors  = tagColors(tags);
-  const gradient = tagsGradient(colors);
+  const tags  = project.tags ?? [];
+  const color = projectColor(project.id);
 
   return (
     <motion.div
@@ -85,19 +74,19 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
           (e.currentTarget as HTMLElement).style.boxShadow = "none";
         }}
       >
-        {/* Top gradient line — same colours as the tag words */}
+        {/* Top solid line — same colour as the tag words */}
         <motion.div
           className="absolute top-0 left-0 right-0 h-[2px]"
-          style={{ background: gradient }}
+          style={{ background: color }}
           initial={{ scaleX: 0, originX: 0 }}
           animate={inView ? { scaleX: 1 } : {}}
           transition={{ delay: (index % 6) * 0.06 + 0.2, duration: 0.55, ease: "easeOut" }}
         />
 
-        {/* Subtle hover glow tinted to first tag colour */}
+        {/* Subtle hover glow */}
         <motion.div
           className="absolute inset-0 pointer-events-none rounded-lg"
-          style={{ background: `radial-gradient(ellipse at 50% 0%, ${colors[0] ?? "#c0392b"}18 0%, transparent 65%)` }}
+          style={{ background: `radial-gradient(ellipse at 50% 0%, ${color}18 0%, transparent 65%)` }}
           animate={{ opacity: hovered ? 1 : 0 }}
           transition={{ duration: 0.25 }}
         />
@@ -106,20 +95,20 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
 
           {/* ── Row 1: tag words · separated (left) + buttons (right) ── */}
           <div className="flex items-center justify-between gap-2">
-            {/* Plain coloured words with · dots — no pill backgrounds */}
+            {/* Plain coloured words with · dots — solid consistent colour */}
             <div className="flex items-center flex-wrap min-w-0">
               {tags.map((tag, i) => (
                 <span key={tag} className="flex items-center">
                   <span
-                    className="text-[10px] font-bold tracking-widest uppercase"
-                    style={{ color: colors[i], fontFamily: "var(--font-mono)" }}
+                    className="text-xs font-bold tracking-widest uppercase"
+                    style={{ color, fontFamily: "var(--font-mono)" }}
                   >
                     {tag}
                   </span>
                   {i < tags.length - 1 && (
                     <span
-                      className="mx-1.5 text-[10px]"
-                      style={{ color: colors[i], opacity: 0.45, fontFamily: "var(--font-mono)" }}
+                      className="mx-2 text-xs"
+                      style={{ color, opacity: 0.4, fontFamily: "var(--font-mono)" }}
                     >
                       ·
                     </span>
@@ -160,7 +149,7 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
                   href={project.website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded focus-visible:outline-none"
+                  className="flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded focus-visible:outline-none"
                   style={{
                     color: "#89d185",
                     border: "1px solid rgba(137,209,133,0.4)",
@@ -173,7 +162,7 @@ function ProjectCard({ project, index }: { project: typeof projects[number]; ind
                   onClick={(e) => e.stopPropagation()}
                 >
                   <motion.span
-                    className="w-1.5 h-1.5 rounded-full shrink-0"
+                    className="w-2 h-2 rounded-full shrink-0"
                     style={{ background: "#89d185" }}
                     animate={{ opacity: [1, 0.25, 1] }}
                     transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
