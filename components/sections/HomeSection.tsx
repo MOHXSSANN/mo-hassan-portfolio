@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useAnimation } from "framer-motion";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Github, Linkedin, Twitter, Mail,
@@ -21,7 +21,7 @@ const TAGLINES = [
   "Junior Dev @ CBSA — building real gov systems ⚙️",
   "Turning caffeine into secure, scalable code ☕",
   "CS student who actually ships things 🚀",
-  "Always learning, always shipping ⚡",
+  "Always learning, always growing ⚡",
 ];
 
 function useCyclingTypewriter(speed = 38, deleteSpeed = 22, pauseMs = 1800, startDelay = 800) {
@@ -103,34 +103,151 @@ function BounceLetter({
   return (
     <motion.span
       animate={controls}
-      style={{
-        display: "inline-block",
-        color,
-        whiteSpace: "pre",
-      }}
+      style={{ display: "inline-block", color, whiteSpace: "pre" }}
     >
       {char}
     </motion.span>
   );
 }
 
-// ── Animated name line ───────────────────────────────────────────────
-function AnimatedName({
-  text, color, triggerBounce,
-}: {
-  text: string; color: string; triggerBounce: boolean;
+// ── Breaking Bad element box ─────────────────────────────────────────
+// "Mo" = Molybdenum (42), "As" inside "Hassan" = Arsenic (33)
+type Seg =
+  | { type: "element"; chars: string; number: number; fillColor: string }
+  | { type: "plain"; chars: string };
+
+const NAME_SEGS: Record<string, Seg[]> = {
+  Mo:     [{ type: "element", chars: "Mo", number: 42, fillColor: "var(--vsc-red-light)" }],
+  Hassan: [
+    { type: "plain",   chars: "H" },
+    { type: "element", chars: "as", number: 33, fillColor: "#ffffff" },
+    { type: "plain",   chars: "san" },
+  ],
+};
+
+const SPLASH_DROPS = [
+  { side: "left",  x: -14, y: -22, size: 3, delay: 0.55 },
+  { side: "left",  x: -8,  y: -30, size: 4, delay: 0.60 },
+  { side: "right", x:  14, y: -22, size: 3, delay: 0.58 },
+  { side: "right", x:  8,  y: -28, size: 4, delay: 0.63 },
+  { side: "left",  x: -18, y: -16, size: 2, delay: 0.65 },
+  { side: "right", x:  18, y: -16, size: 2, delay: 0.67 },
+];
+
+function ElementBox({ chars, number, color, fillColor, shouldFill, delay }: {
+  chars: string; number: number; color: string; fillColor: string; shouldFill: boolean; delay: number;
 }) {
   return (
-    <>
-      {text.split("").map((char, i) => (
-        <BounceLetter
+    <span
+      style={{
+        display: "inline-block",
+        position: "relative",
+        color,
+        border: `0.035em solid ${color}`,
+        padding: "0 12px 0 0.01em",
+        lineHeight: "inherit",
+        verticalAlign: "baseline",
+      }}
+    >
+      {/* Clip wrapper — isolated from text so baseline stays correct */}
+      <span style={{ position: "absolute", inset: 0, overflow: "hidden", display: "block", zIndex: 0 }}>
+        {/* Water fill — rises from bottom like a glass */}
+        <motion.span
+          aria-hidden
+          style={{
+            position: "absolute",
+            left: 0, right: 0, bottom: 0,
+            display: "block",
+            background: fillColor,
+          }}
+          animate={{ height: shouldFill ? "100%" : "0%" }}
+          transition={{ delay, duration: 0.65, ease: [0.25, 0.8, 0.35, 1] }}
+        />
+      </span>
+
+      {/* Splash droplets — outside clip wrapper so they escape the box */}
+      {SPLASH_DROPS.map((drop, i) => (
+        <motion.span
           key={i}
-          char={char}
-          color={color}
-          delay={i * 0.04}
-          shouldBounce={triggerBounce}
+          aria-hidden
+          style={{
+            position: "absolute",
+            bottom: "95%",
+            left: drop.side === "left" ? "20%" : "80%",
+            width: drop.size,
+            height: drop.size,
+            borderRadius: "50%",
+            background: fillColor,
+            display: "block",
+            zIndex: 2,
+          }}
+          animate={shouldFill ? {
+            x: [0, drop.x],
+            y: [0, drop.y, 4],
+            opacity: [0, 1, 0],
+            scale: [0, 1, 0.5],
+          } : { opacity: 0, x: 0, y: 0 }}
+          transition={{
+            delay: delay + drop.delay,
+            duration: 0.5,
+            ease: "easeOut",
+          }}
         />
       ))}
+
+      {/* Text — above fill, baseline-correct */}
+      <span style={{ position: "relative", zIndex: 1 }}>{chars}</span>
+
+      {/* Atomic number */}
+      <span style={{
+        position: "absolute",
+        top: "8px",
+        right: "4px",
+        fontSize: "11px",
+        fontWeight: 700,
+        color,
+        fontFamily: "monospace",
+        lineHeight: 1,
+        whiteSpace: "nowrap",
+        letterSpacing: "1px",
+        zIndex: 1,
+      }}>
+        {number}
+      </span>
+    </span>
+  );
+}
+
+function BreakingBadName({ name, color, shouldFill }: {
+  name: string; color: string; shouldFill: boolean;
+}) {
+  const segs = NAME_SEGS[name];
+  if (!segs) {
+    return <span style={{ color }}>{name}</span>;
+  }
+  let charIdx = 0;
+  return (
+    <>
+      {segs.map((seg, si) => {
+        const startIdx = charIdx;
+        charIdx += seg.chars.length;
+        if (seg.type === "element") {
+          return (
+            <ElementBox
+              key={si}
+              chars={seg.chars}
+              number={seg.number}
+              color={color}
+              fillColor={seg.fillColor}
+              shouldFill={shouldFill}
+              delay={startIdx * 0.02}
+            />
+          );
+        }
+        return (
+          <span key={si} style={{ color }}>{seg.chars}</span>
+        );
+      })}
     </>
   );
 }
@@ -154,15 +271,9 @@ const SOCIAL_ITEMS = [
 
 export function HomeSection({ onNavigate }: HomeSectionProps) {
   const { firstName, lastName, roles, bio, stats, socials } = siteConfig;
-  const [bounce, setBounce] = useState(false);
+  const [active, setActive] = useState(false);
 
   const { displayed: typedTagline, done: taglineDone } = useCyclingTypewriter(36, 20, 1800, 700);
-
-  const handleNameClick = useCallback(() => {
-    setBounce(false);
-    // tiny delay so useEffect fires again even if bounce was already true
-    requestAnimationFrame(() => setBounce(true));
-  }, []);
 
   const activeSocials = SOCIAL_ITEMS.filter((s) => {
     const h = s.href();
@@ -171,15 +282,6 @@ export function HomeSection({ onNavigate }: HomeSectionProps) {
 
   return (
     <div className="relative min-h-full pb-10 overflow-hidden">
-      {/* Background glow */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 40% at 80% 10%, rgba(157,21,21,0.10) 0%, transparent 70%)," +
-            "radial-gradient(ellipse 40% 60% at 10% 80%, rgba(86,156,214,0.05) 0%, transparent 70%)",
-        }}
-      />
 
       {/* Line 1 — comment */}
       <div className="editor-line pt-6">
@@ -202,29 +304,34 @@ export function HomeSection({ onNavigate }: HomeSectionProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.08, duration: 0.5, ease: "easeOut" }}
           className="mb-5 cursor-pointer select-none"
-          onClick={handleNameClick}
-          title="Click me!"
+          onMouseEnter={() => setActive(true)}
+          onMouseLeave={() => setActive(false)}
         >
           <h1
-            className="font-black leading-[0.9] tracking-tight"
+            className="font-black leading-[0.88] tracking-tight"
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(4rem, 10vw, 8.5rem)",
-              letterSpacing: "-0.03em",
+              fontSize: "clamp(5rem, 13vw, 11rem)",
+              letterSpacing: "-0.04em",
             }}
           >
             <span style={{ display: "block" }}>
-              <AnimatedName text={firstName} color="#ffffff" triggerBounce={bounce} />
+              <BreakingBadName name={firstName} color="#ffffff" shouldFill={active} />
             </span>
             <span style={{ display: "block" }}>
-              <AnimatedName
-                text={lastName}
-                color="var(--vsc-red-light)"
-                triggerBounce={bounce}
-              />
+              <BreakingBadName name={lastName} color="var(--vsc-red-light)" shouldFill={active} />
             </span>
           </h1>
         </motion.div>
+
+        {/* ── Divider line ─── */}
+        <motion.div
+          initial={{ scaleX: 0, originX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.15, duration: 0.6, ease: "easeOut" }}
+          className="mb-4 h-px"
+          style={{ background: "linear-gradient(90deg, var(--vsc-red-light), transparent)" }}
+        />
 
         {/* ── Role badges ─── */}
         <motion.div
@@ -233,21 +340,25 @@ export function HomeSection({ onNavigate }: HomeSectionProps) {
           transition={{ delay: 0.18, duration: 0.4, ease: "easeOut" }}
           className="flex flex-wrap items-center gap-2 mb-4"
         >
-          {roles.map((role, i) => (
-            <span
-              key={i}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium"
-              style={{
-                background: `${role.color}14`,
-                border: `1px solid ${role.color}50`,
-                color: role.color,
-                fontFamily: "var(--font-display)",
-              }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: role.color }} />
-              {role.label}
-            </span>
-          ))}
+          {roles.map((role, i) => {
+            const isJob = role.label.startsWith("@");
+            return (
+              <span
+                key={i}
+                className="inline-flex items-center gap-2 px-4 py-1.5 text-sm font-semibold"
+                style={{
+                  background: isJob ? "var(--vsc-red-glow)" : "transparent",
+                  border: isJob ? "1px solid var(--vsc-red)" : "1px solid var(--vsc-border)",
+                  color: isJob ? "var(--vsc-red-light)" : "var(--vsc-fg-muted)",
+                  fontFamily: "var(--font-display)",
+                  borderRadius: 0,
+                }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: isJob ? "var(--vsc-red-light)" : role.color }} />
+                {role.label}
+              </span>
+            );
+          })}
         </motion.div>
 
         {/* ── Typewriter tagline ─── */}
@@ -350,39 +461,76 @@ export function HomeSection({ onNavigate }: HomeSectionProps) {
           </div>
         </motion.div>
 
-        {/* ── Social pills ─── */}
+        {/* ── Social links with brand logos ─── */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.4 }}
-          className="flex flex-wrap gap-2"
+          className="flex flex-wrap gap-3"
         >
-          {activeSocials.map(({ key, label, icon: Icon, href }) => (
+          {[
+            {
+              key: "github",
+              label: "GitHub",
+              href: socials.github,
+              bg: "#ffffff",
+              logo: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                </svg>
+              ),
+            },
+            {
+              key: "linkedin",
+              label: "LinkedIn",
+              href: socials.linkedin,
+              bg: "#0077b5",
+              logo: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+              ),
+            },
+            {
+              key: "email",
+              label: "Email",
+              href: socials.email,
+              bg: "#ea4335",
+              logo: (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.454.183-.891.513-1.21L12 13.09 23.487 4.247c.33.319.513.756.513 1.21z" />
+                </svg>
+              ),
+            },
+          ].filter(s => s.href && s.href.length > 4).map(({ key, label, href, bg, logo }) => (
             <motion.a
               key={key}
-              href={href()}
-              target="_blank"
+              href={href}
+              target={key !== "email" ? "_blank" : undefined}
               rel="noopener noreferrer"
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.96 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium focus-visible:outline-none"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium focus-visible:outline-none"
               style={{
                 background: "var(--vsc-sidebar-bg)",
-                border: "1px solid var(--vsc-border)",
                 color: "var(--vsc-fg-muted)",
                 fontFamily: "var(--font-display)",
+                borderRadius: 0,
+                border: "1px solid var(--vsc-border)",
+                textDecoration: "none",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--vsc-fg-muted)";
                 (e.currentTarget as HTMLElement).style.color = "var(--vsc-fg)";
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--vsc-fg-muted)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.borderColor = "var(--vsc-border)";
                 (e.currentTarget as HTMLElement).style.color = "var(--vsc-fg-muted)";
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--vsc-border)";
               }}
             >
-              <Icon size={12} />
+              {/* Brand-coloured icon */}
+              <span style={{ color: bg, display: "flex" }}>{logo}</span>
               {label}
             </motion.a>
           ))}
@@ -402,8 +550,6 @@ export function HomeSection({ onNavigate }: HomeSectionProps) {
             style={{
               width: 280,
               height: 280,
-              border: "2px solid rgba(157,21,21,0.6)",
-              boxShadow: "0 0 0 4px rgba(157,21,21,0.12), 0 0 40px rgba(157,21,21,0.25)",
               flexShrink: 0,
             }}
           >
