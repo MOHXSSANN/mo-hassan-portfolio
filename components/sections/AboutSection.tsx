@@ -2,22 +2,23 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { GraduationCap, Trophy, MapPin, Mail } from "lucide-react";
+import { GraduationCap, Trophy } from "lucide-react";
+import Image from "next/image";
 import { siteConfig } from "@/lib/siteConfig";
+import { psychologyPapers, paperAuthor } from "@/lib/psychologyPapers";
 import type { FileId } from "@/hooks/useIDEState";
 
 interface AboutSectionProps {
   onNavigate: (id: FileId) => void;
 }
 
-// Parse **bold** highlights into crimson spans
 function HighlightText({ text }: { text: string }) {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   return (
     <>
       {parts.map((part, i) =>
         part.startsWith("**") && part.endsWith("**") ? (
-          <strong key={i} style={{ color: "#c0392b", fontWeight: 600 }}>
+          <strong key={i} style={{ color: "var(--vsc-red-light)", fontWeight: 600 }}>
             {part.slice(2, -2)}
           </strong>
         ) : (
@@ -28,293 +29,296 @@ function HighlightText({ text }: { text: string }) {
   );
 }
 
-function FocusItem({ text, index }: { text: string; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "0px 0px -10px 0px" });
-
+function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, x: -10 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ delay: index * 0.05, duration: 0.35, ease: "easeOut" }}
-      className="flex items-start gap-3"
-      style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-display)", fontSize: "15px", lineHeight: 1.6 }}
-    >
-      <span
-        style={{
-          color: "#9d1515",
-          fontSize: "11px",
-          marginTop: "5px",
-          flexShrink: 0,
-          fontFamily: "var(--font-mono)",
-        }}
-      >
-        ▸
-      </span>
-      <span>{text}</span>
-    </motion.div>
-  );
-}
-
-function AchievementCard({
-  title,
-  org,
-  years,
-  index,
-}: {
-  title: string;
-  org: string;
-  years: string;
-  index: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "0px 0px -20px 0px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 10 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ delay: index * 0.07, duration: 0.35, ease: "easeOut" }}
-      className="flex items-start gap-3 p-4 rounded-lg"
+    <h3
+      className="font-bold tracking-widest uppercase mb-5 pb-2"
       style={{
-        background: "var(--vsc-sidebar-bg)",
-        border: "1px solid var(--vsc-border)",
-        borderLeft: "3px solid #9d1515",
+        color: "var(--vsc-red-light)",
+        borderBottom: "1px solid var(--vsc-border)",
+        fontFamily: "var(--font-display)",
+        letterSpacing: "0.14em",
+        fontSize: "13px",
       }}
     >
-      <div
-        className="shrink-0 mt-0.5 rounded p-1.5"
-        style={{
-          background: "rgba(157,21,21,0.1)",
-          border: "1px solid rgba(157,21,21,0.25)",
-        }}
-      >
-        <Trophy size={14} style={{ color: "#c0392b" }} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div
-          className="font-semibold"
-          style={{ color: "#ffffff", fontFamily: "var(--font-display)", fontSize: "14px" }}
-        >
-          {title}
-        </div>
-        <div
-          className="flex items-center gap-2 mt-1"
-          style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)", fontSize: "12px" }}
-        >
-          <span>{org}</span>
-          <span style={{ color: "var(--vsc-border)" }}>·</span>
-          <span style={{ color: "#9d1515" }}>{years}</span>
-        </div>
-      </div>
-    </motion.div>
+      {children}
+    </h3>
   );
 }
 
 export function AboutSection({ onNavigate: _onNavigate }: AboutSectionProps) {
-  const { about, education, name, email, location, achievements } = siteConfig;
+  const { about, education, achievements } = siteConfig;
+  const bioRef = useRef<HTMLDivElement>(null);
+  const bioInView = useInView(bioRef, { once: true });
 
   return (
-    <div className="min-h-full py-10 pb-20 px-12" style={{ maxWidth: "1400px" }}>
-      {/* Comment header */}
+    <div className="min-h-full pb-20 px-10 lg:px-16 pt-10" style={{ maxWidth: "1200px" }}>
+
+      {/* File comment header */}
       <p
-        className="text-sm mb-5"
-        style={{ color: "var(--vsc-comment)", fontFamily: "var(--font-mono)", fontStyle: "italic" }}
+        className="text-sm mb-4"
+        style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}
       >
-        {`<!-- about.html — the human behind the code -->`}
+        ← about.html — Mo Hassan →
       </p>
 
       {/* Big heading */}
-      <h1
-        className="font-black mb-3 leading-none"
+      <motion.h1
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="font-black mb-1 leading-none"
         style={{
-          fontSize: "clamp(48px, 8vw, 72px)",
-          color: "var(--vsc-fg)",
+          fontSize: "clamp(3rem, 7vw, 5rem)",
+          color: "#ffffff",
           fontFamily: "var(--font-display)",
-          letterSpacing: "-0.02em",
+          letterSpacing: "-0.03em",
         }}
       >
         About Me
-      </h1>
+      </motion.h1>
 
-      {/* HTML-style subtitle */}
-      <p className="text-sm mb-10" style={{ fontFamily: "var(--font-mono)" }}>
-        <span style={{ color: "var(--vsc-blue)" }}>&lt;</span>
-        <span style={{ color: "#c0392b)" }}>section</span>
-        <span style={{ color: "var(--vsc-blue)" }}>&gt;</span>
-        <span style={{ color: "var(--vsc-fg-muted)", marginLeft: "8px" }}>// who I am · what I do · where I build</span>
-      </p>
+      {/* Role tagline */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.08, duration: 0.4 }}
+        className="mb-1 font-semibold"
+        style={{ color: "var(--vsc-red-light)", fontFamily: "var(--font-display)", fontSize: "1.1rem" }}
+      >
+        Cybersecurity / Full-Stack Developer
+      </motion.p>
+
+      {/* Subtitle comment */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.12, duration: 0.4 }}
+        className="text-sm mb-10"
+        style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}
+      >
+        // who I am - what I do - where I build
+      </motion.p>
 
       {/* Two-column layout */}
-      <div className="flex flex-col xl:flex-row gap-12">
+      <div className="flex flex-col xl:flex-row gap-14">
 
         {/* LEFT column */}
         <div className="flex-1 min-w-0 space-y-10">
 
-          {/* Bio card */}
+          {/* Bio */}
           <motion.div
+            ref={bioRef}
             initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05, duration: 0.45, ease: "easeOut" }}
+            animate={bioInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.45, ease: "easeOut" }}
             className="rounded-lg p-6"
             style={{
               background: "var(--vsc-sidebar-bg)",
               border: "1px solid var(--vsc-border)",
-              borderLeft: "4px solid #9d1515",
+              borderLeft: "3px solid var(--vsc-red-light)",
             }}
           >
-            <p
-              style={{
-                color: "var(--vsc-fg)",
-                fontFamily: "var(--font-display)",
-                fontSize: "16px",
-                lineHeight: 1.8,
-              }}
-            >
+            <p style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-display)", fontSize: "16px", lineHeight: 1.85 }}>
               <HighlightText text={about.bio} />
             </p>
-
-            {/* Contact line */}
-            <div className="flex flex-wrap items-center gap-5 mt-5 pt-4" style={{ borderTop: "1px solid var(--vsc-border)" }}>
-              <span className="flex items-center gap-1.5" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)", fontSize: "12px" }}>
-                <MapPin size={12} style={{ color: "#9d1515" }} />
-                {location}
-              </span>
-              <span className="flex items-center gap-1.5" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)", fontSize: "12px" }}>
-                <Mail size={12} style={{ color: "#9d1515" }} />
-                {email}
-              </span>
-            </div>
           </motion.div>
 
           {/* Current Focus */}
           <div>
-            <h3
-              className="text-xs font-bold tracking-widest uppercase mb-5 pb-2"
-              style={{
-                color: "var(--vsc-fg-muted)",
-                borderBottom: "1px solid var(--vsc-border)",
-                fontFamily: "var(--font-display)",
-                letterSpacing: "0.16em",
-                fontSize: "13px",
-              }}
-            >
-              Current Focus
-            </h3>
+            <SectionHeader>Current Focus</SectionHeader>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
               {about.currentFocusPoints.map((point, i) => (
-                <FocusItem key={i} text={point} index={i} />
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.06, duration: 0.35, ease: "easeOut" }}
+                  className="flex items-start gap-3"
+                  style={{ color: "var(--vsc-fg)", fontFamily: "var(--font-display)", fontSize: "15px", lineHeight: 1.6 }}
+                >
+                  <span style={{ color: "var(--vsc-red-light)", fontSize: "11px", marginTop: "5px", flexShrink: 0, fontFamily: "var(--font-mono)" }}>▸</span>
+                  <span>{point}</span>
+                </motion.div>
               ))}
             </div>
           </div>
 
-          {/* Achievements */}
-          {achievements && achievements.length > 0 && (
+          {/* Beyond Code */}
+          {about.beyondCode && (
             <div>
-              <h3
-                className="text-xs font-bold tracking-widest uppercase mb-5 pb-2"
-                style={{
-                  color: "var(--vsc-fg-muted)",
-                  borderBottom: "1px solid var(--vsc-border)",
-                  fontFamily: "var(--font-display)",
-                  letterSpacing: "0.16em",
-                  fontSize: "13px",
-                }}
+              <SectionHeader>Beyond Code</SectionHeader>
+
+              {/* OVR feature card */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, ease: "easeOut" }}
+                className="rounded-lg mb-4 overflow-hidden"
+                style={{ background: "var(--vsc-sidebar-bg)", border: "1px solid var(--vsc-border)", borderLeft: "3px solid var(--vsc-red-light)" }}
               >
-                Achievements & Involvement
-              </h3>
+                {/* Header row */}
+                <div className="flex items-center gap-4 p-4">
+                  <Image src="/logo.png" alt="OVR Logo" width={56} height={56} style={{ borderRadius: 8, flexShrink: 0, objectFit: "contain" }} />
+                  <div>
+                    <p className="font-bold" style={{ color: "#ffffff", fontFamily: "var(--font-display)", fontSize: "15px" }}>
+                      Ottawa Volleyball Revival
+                    </p>
+                    <a
+                      href="https://www.instagram.com/ovrleague"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "var(--vsc-red-light)", fontFamily: "var(--font-mono)", fontSize: "12px", textDecoration: "none" }}
+                    >
+                      @ovrleague
+                    </a>
+                    <p className="text-sm mt-0.5" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-display)", lineHeight: 1.5 }}>
+                      Competitive volleyball league & tournaments · 150+ attendees
+                    </p>
+                  </div>
+                </div>
+
+                {/* Photo grid */}
+                <div className="grid grid-cols-3 gap-0.5 px-0.5 pb-0.5">
+                  {[
+                    "/ovr/OVR-062.jpg",
+                    "/ovr/OVR-068.jpg",
+                    "/ovr/OVR-124.jpg",
+                    "/ovr/OVR-144.jpg",
+                    "/ovr/OVR-147.jpg",
+                    "/ovr/OVR-245.jpg",
+                  ].map((src, i) => (
+                    <div key={i} className="relative overflow-hidden" style={{ aspectRatio: "4/3" }}>
+                      <Image
+                        src={src}
+                        alt={`OVR photo ${i + 1}`}
+                        fill
+                        className="object-cover"
+                        style={{ transition: "transform 0.3s ease" }}
+                        onMouseEnter={e => ((e.currentTarget as HTMLElement).style.transform = "scale(1.05)")}
+                        onMouseLeave={e => ((e.currentTarget as HTMLElement).style.transform = "scale(1)")}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+
               <div className="space-y-3">
-                {achievements.map((ach, i) => (
-                  <AchievementCard
-                    key={i}
-                    title={ach.title}
-                    org={ach.org}
-                    years={ach.years}
-                    index={i}
-                  />
-                ))}
+                {about.beyondCode.map((item, i) => {
+                  const isPsych = item.title === "Psychology Enthusiast";
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.07, duration: 0.35, ease: "easeOut" }}
+                      className="rounded"
+                      style={{ background: "var(--vsc-sidebar-bg)", border: "1px solid var(--vsc-border)" }}
+                    >
+                      <div className="flex items-start gap-3 px-4 py-3">
+                        <span style={{ color: "var(--vsc-red-light)", fontSize: "11px", marginTop: "4px", flexShrink: 0, fontFamily: "var(--font-mono)" }}>▸</span>
+                        <div>
+                          <p className="font-semibold" style={{ color: "#ffffff", fontFamily: "var(--font-display)", fontSize: "14px" }}>{item.title}</p>
+                          <p className="text-sm mt-0.5" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-display)", lineHeight: 1.6 }}>{item.body}</p>
+                        </div>
+                      </div>
+
+                      {/* Psychology papers attached to the Psychology Enthusiast card */}
+                      {isPsych && (
+                        <div className="px-4 pb-4 space-y-2 mt-1">
+                          <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}>
+                            Articles & Papers
+                          </p>
+                          {psychologyPapers.map((paper, pi) => (
+                            <div
+                              key={pi}
+                              className="p-3 rounded"
+                              style={{ background: "var(--vsc-editor-bg)", border: "1px solid var(--vsc-border)" }}
+                            >
+                              <p className="font-semibold text-sm leading-snug mb-1" style={{ color: "#ffffff", fontFamily: "var(--font-display)" }}>
+                                {paper.title}
+                              </p>
+                              <p className="text-xs mb-2" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}>
+                                {paperAuthor} · {paper.year}
+                              </p>
+                              <p className="text-xs leading-relaxed mb-2" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-display)", lineHeight: 1.65 }}>
+                                {paper.abstract}
+                              </p>
+                              <div className="flex flex-wrap items-center justify-between gap-2 mt-1">
+                                <div className="flex flex-wrap gap-1.5">
+                                  {paper.keywords.map((kw) => (
+                                    <span
+                                      key={kw}
+                                      className="text-[10px] px-2 py-0.5 rounded"
+                                      style={{ color: "var(--vsc-red-light)", background: "rgba(197,38,38,0.08)", border: "1px solid rgba(197,38,38,0.2)", fontFamily: "var(--font-mono)" }}
+                                    >
+                                      {kw}
+                                    </span>
+                                  ))}
+                                </div>
+                                <a
+                                  href={paper.pdfUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[11px] font-semibold px-3 py-1 rounded shrink-0"
+                                  style={{ color: "var(--vsc-red-light)", border: "1px solid rgba(197,38,38,0.35)", fontFamily: "var(--font-mono)", textDecoration: "none", background: "rgba(197,38,38,0.06)" }}
+                                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(197,38,38,0.15)"; }}
+                                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "rgba(197,38,38,0.06)"; }}
+                                >
+                                  Read Paper ↗
+                                </a>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
               </div>
             </div>
           )}
         </div>
 
-        {/* RIGHT column — Education + highlights */}
-        <div className="xl:w-[380px] shrink-0 space-y-8">
+        {/* RIGHT column */}
+        <div className="xl:w-[360px] shrink-0 space-y-10">
 
           {/* Education */}
           <div>
-            <h3
-              className="text-xs font-bold tracking-widest uppercase mb-5 pb-2"
-              style={{
-                color: "var(--vsc-fg-muted)",
-                borderBottom: "1px solid var(--vsc-border)",
-                fontFamily: "var(--font-display)",
-                letterSpacing: "0.16em",
-                fontSize: "13px",
-              }}
-            >
-              Education
-            </h3>
+            <SectionHeader>Education</SectionHeader>
             <div className="space-y-3">
               {education.map((edu, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * i + 0.2, duration: 0.35, ease: "easeOut" }}
+                  transition={{ delay: 0.1 * i + 0.15, duration: 0.35, ease: "easeOut" }}
                   className="rounded-lg p-4"
-                  style={{
-                    background: "var(--vsc-sidebar-bg)",
-                    border: "1px solid var(--vsc-border)",
-                  }}
+                  style={{ background: "var(--vsc-sidebar-bg)", border: "1px solid var(--vsc-border)" }}
                 >
                   <div className="flex items-start gap-3">
-                    <div
-                      className="shrink-0 mt-0.5 rounded p-1.5"
-                      style={{
-                        background: "rgba(157,21,21,0.1)",
-                        border: "1px solid rgba(157,21,21,0.25)",
-                      }}
-                    >
-                      <GraduationCap size={14} style={{ color: "#c0392b" }} />
+                    <div className="shrink-0 rounded overflow-hidden" style={{ width: 36, height: 36, background: "#fff", border: "1px solid var(--vsc-border)", flexShrink: 0 }}>
+                      {edu.logo ? (
+                        <Image src={edu.logo} alt={edu.school} width={36} height={36} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center" style={{ background: "rgba(157,21,21,0.1)" }}>
+                          <GraduationCap size={14} style={{ color: "var(--vsc-red-light)" }} />
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div
-                        className="font-semibold"
-                        style={{ color: "#ffffff", fontFamily: "var(--font-display)", fontSize: "14px" }}
-                      >
+                      <div className="font-semibold" style={{ color: "#ffffff", fontFamily: "var(--font-display)", fontSize: "15px" }}>
                         {edu.school}
                       </div>
-                      <div
-                        className="mt-1"
-                        style={{
-                          color: "var(--vsc-fg-muted)",
-                          fontFamily: "var(--font-display)",
-                          fontSize: "13px",
-                          lineHeight: 1.5,
-                        }}
-                      >
+                      <div className="mt-1" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-display)", fontSize: "13px", lineHeight: 1.5 }}>
                         {edu.degree}
                       </div>
                       <div className="flex flex-wrap items-center gap-2 mt-2.5">
-                        <span
-                          className="px-2 py-0.5 rounded text-[11px]"
-                          style={{
-                            background: "rgba(157,21,21,0.1)",
-                            border: "1px solid rgba(157,21,21,0.3)",
-                            color: "#c0392b",
-                            fontFamily: "var(--font-mono)",
-                          }}
-                        >
+                        <span className="px-2 py-0.5 rounded text-xs" style={{ background: "rgba(157,21,21,0.1)", border: "1px solid rgba(157,21,21,0.3)", color: "var(--vsc-red-light)", fontFamily: "var(--font-mono)" }}>
                           {edu.year}
                         </span>
                         {edu.gpa && (
-                          <span
-                            className="text-[11px]"
-                            style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}
-                          >
+                          <span className="text-xs" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)" }}>
                             GPA: {edu.gpa}
                           </span>
                         )}
@@ -326,50 +330,45 @@ export function AboutSection({ onNavigate: _onNavigate }: AboutSectionProps) {
             </div>
           </div>
 
-          {/* Highlights / quick facts */}
-          <div>
-            <h3
-              className="text-xs font-bold tracking-widest uppercase mb-5 pb-2"
-              style={{
-                color: "var(--vsc-fg-muted)",
-                borderBottom: "1px solid var(--vsc-border)",
-                fontFamily: "var(--font-display)",
-                letterSpacing: "0.16em",
-                fontSize: "13px",
-              }}
-            >
-              Quick Facts
-            </h3>
-            <div className="space-y-2">
-              {about.highlights.map((h, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.06 + 0.15, duration: 0.3, ease: "easeOut" }}
-                  className="flex items-start gap-2.5 py-2 px-3 rounded"
-                  style={{
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px solid var(--vsc-border)",
-                    fontFamily: "var(--font-display)",
-                    fontSize: "13px",
-                    color: "var(--vsc-fg)",
-                    lineHeight: 1.5,
-                  }}
-                >
-                  <span style={{ color: "#9d1515", fontSize: "10px", marginTop: "4px", flexShrink: 0 }}>◆</span>
-                  {h}
-                </motion.div>
-              ))}
+          {/* Achievements */}
+          {achievements?.length > 0 && (
+            <div>
+              <SectionHeader>Achievements & Involvement</SectionHeader>
+              <div className="space-y-3">
+                {achievements.map((ach, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.07 + 0.2, duration: 0.35, ease: "easeOut" }}
+                    className="flex items-start gap-3 p-4 rounded-lg"
+                    style={{ background: "var(--vsc-sidebar-bg)", border: "1px solid var(--vsc-border)", borderLeft: "3px solid var(--vsc-red-light)" }}
+                  >
+                    <div className="shrink-0 rounded overflow-hidden" style={{ width: 36, height: 36, background: "#fff", border: "1px solid var(--vsc-border)", flexShrink: 0 }}>
+                      {ach.logo ? (
+                        <Image src={ach.logo} alt={ach.org} width={36} height={36} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center" style={{ background: "rgba(157,21,21,0.1)" }}>
+                          <Trophy size={14} style={{ color: "var(--vsc-red-light)" }} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold" style={{ color: "#ffffff", fontFamily: "var(--font-display)", fontSize: "14px" }}>
+                        {ach.title}
+                      </div>
+                      <div className="flex items-center gap-2 mt-1" style={{ color: "var(--vsc-fg-muted)", fontFamily: "var(--font-mono)", fontSize: "12px" }}>
+                        <span>{ach.org}</span>
+                        <span style={{ color: "var(--vsc-border)" }}>·</span>
+                        <span style={{ color: "var(--vsc-red-light)" }}>{ach.years}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Closing tag */}
-          <p style={{ fontFamily: "var(--font-mono)", fontSize: "13px" }}>
-            <span style={{ color: "var(--vsc-blue)" }}>&lt;/</span>
-            <span style={{ color: "var(--vsc-fg-muted)" }}>section</span>
-            <span style={{ color: "var(--vsc-blue)" }}>&gt;</span>
-          </p>
         </div>
       </div>
     </div>
