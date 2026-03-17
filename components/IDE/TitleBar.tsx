@@ -94,7 +94,7 @@ function buildMenus(actions: {
       { type: "item", label: "Ctrl+B  →  Toggle sidebar", action: actions.toggleSidebar },
       { type: "item", label: "Esc     →  Close overlay" },
       { type: "sep" },
-      { type: "item", label: "GitHub ↗", icon: "↗", action: () => window.open("https://github.com/mohammedhassan62", "_blank") },
+      { type: "item", label: "GitHub ↗", icon: "↗", action: () => window.open("https://github.com/MOHXSSANN", "_blank") },
       { type: "item", label: "About",               action: () => alert("Mo Hassan — Portfolio v1.0\nBuilt with Next.js, Tailwind, Framer Motion") },
     ],
   };
