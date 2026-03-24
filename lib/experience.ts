@@ -16,7 +16,7 @@ export const experience: ExperienceEntry[] = [
     period: "Apr. 2025 — Present",
     location: "Ottawa, ON",
     description:
-      "Collaborating in an agile team to design and implement Radiance Vault — a full-stack document management and search system used by Border Services Officers.",
+      "Collaborating in an agile team to design and implement full-stack internal tools used by Border Services Officers.",
     achievements: [
       "Developed backend services in Python (Typer, Starlette, Shiny) and built a cross-platform desktop UI using PyWebView",
       "Integrated Meilisearch for real-time, typo-tolerant search and configured secure API key-based authentication",

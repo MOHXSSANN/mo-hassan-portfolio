@@ -28,31 +28,6 @@ export const projects: Project[] = [
     emoji: "💻",
   },
   {
-    id: "radiance-vault",
-    name: "Radiance Vault",
-    description:
-      "Secure document search and classification platform built for the Canada Border Services Agency. Enables officers to label, index, and retrieve documents with real-time search, automated indexing, and document parsing pipelines (PDF, DOCX, MHTML, images) — optimized to sub-50ms query performance.",
-    tech: ["Python", "Meilisearch", "PyWebView", "InstantSearch.js", "Starlette", "Tailwind CSS"],
-    tags: ["FULL STACK", "GOVERNMENT", "SEARCH"],
-    featured: true,
-    status: "live",
-    year: "2025",
-    emoji: "🔍",
-  },
-  {
-    id: "radiance-copilot",
-    name: "Radiance Copilot",
-    description:
-      "Python automation tool for CBSA officers — extracts data from SAISIE seizure PDFs and auto-fills K138 notice forms with bilingual (EN/FR) content. Reduces manual data entry time significantly for border enforcement workflows.",
-    tech: ["Python", "PDF Parsing", "Automation", "Bilingual NLP"],
-    repo: "https://github.com/MOHXSSANN/radiance-copilot",
-    tags: ["AUTOMATION", "GOVERNMENT", "AI"],
-    featured: true,
-    status: "live",
-    year: "2025",
-    emoji: "🤖",
-  },
-  {
     id: "ovr-site",
     name: "Ottawa Volleyball Revival",
     description:
@@ -169,6 +144,20 @@ export const projects: Project[] = [
     status: "archived",
     year: "2023",
     emoji: "🏥",
+  },
+  {
+    id: "raven-rank",
+    name: "Raven Rank",
+    description:
+      "Carleton University grade distributions, professor ratings, and course data. Helps students make informed decisions when picking courses and professors.",
+    tech: ["TypeScript", "Next.js", "Vercel"],
+    repo: "https://github.com/MOHXSSANN/ravenrank",
+    website: "https://ravenrank.vercel.app/",
+    tags: ["FULL STACK", "EDUCATION", "WEB APP"],
+    featured: true,
+    status: "live",
+    year: "2026",
+    emoji: "🐦",
   },
   {
     id: "country-anki",
