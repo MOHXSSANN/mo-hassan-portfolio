@@ -169,4 +169,17 @@ export const projects: Project[] = [
     year: "2023",
     emoji: "🏥",
   },
+  {
+    id: "country-anki",
+    name: "CountryAnki",
+    description:
+      "Interactive flashcard app for learning countries, capitals, and flags. Features spaced repetition and quiz modes to reinforce geography knowledge.",
+    tech: ["JavaScript", "HTML", "CSS"],
+    repo: "https://github.com/MOHXSSANN/CountryAnki-",
+    tags: ["EDUCATION", "WEB APP"],
+    featured: false,
+    status: "live",
+    year: "2026",
+    emoji: "🌍",
+  },
 ];
